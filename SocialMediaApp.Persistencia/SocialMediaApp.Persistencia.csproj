@@ -25,4 +25,8 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\SocialMediaApp.Dominio\SocialMediaApp.Dominio.csproj" />
+  </ItemGroup>
+
 </Project>

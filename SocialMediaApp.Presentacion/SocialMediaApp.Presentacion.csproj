@@ -14,4 +14,8 @@
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.EntityFrameworkCore" Version="8.0.6" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\SocialMediaApp.Persistencia\SocialMediaApp.Persistencia.csproj" />
+  </ItemGroup>
+
 </Project>
