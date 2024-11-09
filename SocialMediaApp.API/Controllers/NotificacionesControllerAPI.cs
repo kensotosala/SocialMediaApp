@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using SocialMediaApp.Dominio.Interfaces;
+using SocialMediaApp.Persistencia.Data;
 
 namespace SocialMediaApp.API.Controllers
 {
@@ -9,29 +9,36 @@ namespace SocialMediaApp.API.Controllers
     public class NotificacionesControllerAPI : Controller
     {
         private readonly INotificaciones _repNotificaciones;
+
         public NotificacionesControllerAPI(INotificaciones repNotificaciones)
         {
             _repNotificaciones = repNotificaciones;
         }
-        // Obtiene las notificaciones del usuario autenticado
-        [HttpGet("mis-notificaciones")]
-        public async Task<IActionResult> ObtenerMisNotificaciones()
+
+        //// Marca una notificación como leída
+        //[HttpPut("{id}/marcar-leida")]
+        //public async Task<IActionResult> MarcarNotificacionComoLeida(int id)
+        //{
+        //    await _repNotificaciones.MarcarNotificacionComoLeidaAsync(id);
+        //    return NoContent();
+        //}
+
+
+        // Crear una notificación
+        [HttpGet]
+        [Route("ObtenerNotificaciones")]
+        public async Task<ActionResult> ObtenerNotificaciones()
         {
-            var usuarioId = int.Parse(User.Identity.Name);
-            var notificaciones = await _repNotificaciones.ObtenerNotificacionesParaUsuarioAsync(usuarioId);
-            return Ok(notificaciones);
+            return Ok(new { resultado = await _repNotificaciones.obtenerTodo() });
         }
 
-        // Marca una notificación como leída
-        [HttpPut("{id}/marcar-leida")]
-        public async Task<IActionResult> MarcarNotificacionComoLeida(int id)
+        // Crear una notificación
+        [HttpPost]
+        [Route("CrearNotificacion")]
+        public async Task<ActionResult> CrearNotificacion([FromBody] Notificacione notificacion)
         {
-            await _repNotificaciones.MarcarNotificacionComoLeidaAsync(id);
-            return NoContent();
+            return Ok(new { resultado = await _repNotificaciones.insertar(notificacion) });
         }
-
-
-
 
         /*
         // GET: NotificacionesControllerAPI

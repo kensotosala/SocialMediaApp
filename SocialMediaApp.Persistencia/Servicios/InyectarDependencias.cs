@@ -14,7 +14,7 @@ namespace SocialMediaApp.Persistencia.Servicios
         public static void ConfiguracionServicios(IServiceCollection servicios)
         {
             servicios.AddScoped<IEvento,RepositorioEvento>();
-            servicios.AddScoped<INotificaciones, RepositorioNotificanciones>();
+            servicios.AddScoped<INotificaciones, RepositorioNotificaciones>();
             
         }
 

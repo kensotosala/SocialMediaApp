@@ -1,8 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using SocialMediaApp.Dominio.Interfaces;
-using SocialMediaApp.Dominio.Models;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using SocialMediaApp.Persistencia.Data;
 
 namespace SocialMediaApp.Presentacion.Controllers
 {

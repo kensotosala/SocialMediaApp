@@ -1,15 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SocialMediaApp.Dominio.Interfaces;
 using SocialMediaApp.Persistencia.Data;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SocialMediaApp.Persistencia.Repositorios
 {
-    public class RepositorioNotificanciones : INotificaciones
+    public class RepositorioNotificaciones : INotificaciones
     {
         private readonly SocialMediaDBContext _context;
 
@@ -23,7 +18,6 @@ namespace SocialMediaApp.Persistencia.Repositorios
         {
             _context.Notificaciones.Add(notificacione);
             await _context.SaveChangesAsync();
-
         }
 
         // Marca una notificación como leída
@@ -56,22 +50,31 @@ namespace SocialMediaApp.Persistencia.Repositorios
             }
         }
 
-        // Modifica una notificación existente
-        public async Task ModificarNotificacionAsync(Notificacione notificacion)
+        public async Task<int> insertar(Notificacione notifacion)
         {
-            var notificacionExistente = await _context.Notificaciones.FindAsync(notificacion.NotificacionId);
-            if (notificacionExistente != null)
-            {
-                // Actualiza las propiedades de la notificación existente
-                notificacionExistente.Titulo = notificacion.Titulo;
-                notificacionExistente.Mensaje = notificacion.Mensaje;
-                notificacionExistente.Fecha = notificacion.Fecha;
-                notificacionExistente.EsLeida = notificacion.EsLeida;
-
-                _context.Notificaciones.Update(notificacionExistente);
-                await _context.SaveChangesAsync();
-            }
+            _context.Add(notifacion);
+            var res = _context.SaveChangesAsync();
+            return await res;
         }
-    }
 
+        public Task<List<Notificacione>> obtenerTodo()
+        {
+            return _context.Notificaciones.Include(c => c.Usuario).ToListAsync();
+        }
+
+        // Modifica una notificación existente
+        //public async Task ModificarNotificacionAsync(Notificaciones notificacion)
+        //{
+        //    var notificacionExistente = await _context.Notificaciones.FindAsync(notificacion.NotificacionId);
+        //    if (notificacionExistente != null)
+        //    {
+        //        // Actualiza las propiedades de la notificación existente
+        //        notificacionExistente.Fecha = notificacion.Fecha;
+        //        notificacionExistente.EsLeida = notificacion.EsLeida;
+
+        //        _context.Notificaciones.Update(notificacionExistente);
+        //        await _context.SaveChangesAsync();
+        //    }
+        //}
+    }
 }

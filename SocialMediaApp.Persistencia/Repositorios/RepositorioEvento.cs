@@ -81,7 +81,6 @@ namespace SocialMediaApp.Persistencia.Repositorios
                 // Actualizamos los datos del evento existente con los nuevos valores
                 eventoExistente.Titulo = evento.Titulo;
                 eventoExistente.Descripcion = evento.Descripcion;
-                eventoExistente.Fecha = evento.Fecha;
                 eventoExistente.Ubicacion = evento.Ubicacion;
                 eventoExistente.UsuarioId = evento.UsuarioId;
 
