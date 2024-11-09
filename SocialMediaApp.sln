@@ -4,9 +4,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 17.11.35312.102
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Dominio", "Dominio", "{9959EDFC-36A2-447C-B61D-578AF04C0374}"
-	ProjectSection(SolutionItems) = preProject
-		test.txt = test.txt
-	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infraestructura", "Infraestructura", "{670C2957-CCD5-41DB-AE38-070B2796D727}"
 EndProject
