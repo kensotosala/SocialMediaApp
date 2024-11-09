@@ -23,9 +23,9 @@ namespace SocialMediaApp.Persistencia.Repositorios
         public async Task<IEnumerable<Evento>> ObtenerEventosParaUsuarioAsync(int UsuarioId)
         {
             return await _context.Eventos
-        .Include(e => e.InvitadosEventos) // Usamos el nombre correcto de la propiedad de navegación
-        .Where(e => e.UsuarioId == UsuarioId || e.InvitadosEventos.Any(i => i.UsuarioId == UsuarioId)) // Aseguramos el uso de "UsuarioId" con la mayúscula y minúscula correctas
-        .ToListAsync();
+                .Include(e => e.InvitadosEventos)
+                .Where(e => e.UsuarioId == UsuarioId || e.InvitadosEventos.Any(i => i.UsuarioId == UsuarioId))
+                .ToListAsync();
         }
 
         // Agrega un nuevo evento
@@ -61,7 +61,33 @@ namespace SocialMediaApp.Persistencia.Repositorios
             }
         }
 
-        
-    }
+        // Elimina un evento existente
+        public async Task EliminarEventoAsync(int eventoId)
+        {
+            var evento = await _context.Eventos.FindAsync(eventoId);
+            if (evento != null)
+            {
+                _context.Eventos.Remove(evento);
+                await _context.SaveChangesAsync();
+            }
+        }
 
+        // Modifica un evento existente
+        public async Task ModificarEventoAsync(Evento evento)
+        {
+            var eventoExistente = await _context.Eventos.FindAsync(evento.EventoId);
+            if (eventoExistente != null)
+            {
+                // Actualizamos los datos del evento existente con los nuevos valores
+                eventoExistente.Titulo = evento.Titulo;
+                eventoExistente.Descripcion = evento.Descripcion;
+                eventoExistente.Fecha = evento.Fecha;
+                eventoExistente.Ubicacion = evento.Ubicacion;
+                eventoExistente.UsuarioId = evento.UsuarioId;
+
+                _context.Eventos.Update(eventoExistente);
+                await _context.SaveChangesAsync();
+            }
+        }
+    }
 }

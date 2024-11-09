@@ -24,7 +24,7 @@ namespace SocialMediaApp.API.Controllers
         }
 
         // Crea un nuevo evento
-        [HttpPost]
+        [HttpPost("CrearEvento")]
         public async Task<IActionResult> CrearEvento(Evento evento)
         {
             await _repEvento.AgregarEventoAsync(evento);
