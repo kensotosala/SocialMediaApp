@@ -1,16 +1,10 @@
 ﻿using SocialMediaApp.Dominio.Interfaces;
 using SocialMediaApp.Persistencia.Data;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace SocialMediaApp.Persistencia.Repositorios
 {
-    public class RepositorioEvento:IEvento
+    public class RepositorioEvento : IEvento
     {
         private readonly SocialMediaDBContext _context;
 
@@ -20,12 +14,20 @@ namespace SocialMediaApp.Persistencia.Repositorios
         }
 
         // Obtiene eventos creados por el usuario o eventos en los que está invitado
-        public async Task<IEnumerable<Evento>> ObtenerEventosParaUsuarioAsync(int UsuarioId)
+        public async Task<IEnumerable<Evento>> ObtenerEventosParaUsuarioAsync(int usuarioId)
         {
             return await _context.Eventos
                 .Include(e => e.InvitadosEventos)
-                .Where(e => e.UsuarioId == UsuarioId || e.InvitadosEventos.Any(i => i.UsuarioId == UsuarioId))
+                .Where(e => e.UsuarioId == usuarioId || e.InvitadosEventos.Any(i => i.UsuarioId == usuarioId))
                 .ToListAsync();
+        }
+
+        // Obtiene un evento específico
+        public async Task<Evento?> ObtenerEventoAsync(int eventoId)
+        {
+            return await _context.Eventos
+                .Include(e => e.InvitadosEventos)
+                .FirstOrDefaultAsync(e => e.EventoId == eventoId);
         }
 
         // Agrega un nuevo evento
@@ -35,28 +37,20 @@ namespace SocialMediaApp.Persistencia.Repositorios
             await _context.SaveChangesAsync();
         }
 
-        // Invita a un usuario a un evento
-        public async Task InvitarUsuarioAsync(int eventoId, int usuarioId)
+        // Modifica un evento existente
+        public async Task ModificarEventoAsync(Evento evento)
         {
-            var invitado = new InvitadosEvento
+            var eventoExistente = await _context.Eventos.FindAsync(evento.EventoId);
+            if (eventoExistente != null)
             {
-                EventoId = eventoId,
-                UsuarioId = usuarioId,
-                Confirmacion = "Pendiente"
-            };
-            _context.InvitadosEventos.Add(invitado);
-            await _context.SaveChangesAsync();
-        }
+                // Actualiza los datos del evento existente con los nuevos valores
+                eventoExistente.Titulo = evento.Titulo;
+                eventoExistente.Descripcion = evento.Descripcion;
+                eventoExistente.Ubicacion = evento.Ubicacion;
+                eventoExistente.FechaEvento = evento.FechaEvento;
+                eventoExistente.UsuarioId = evento.UsuarioId;
 
-        // Confirma o rechaza la asistencia del usuario al evento
-        public async Task ConfirmarAsistenciaAsync(int eventoId, int usuarioId, string confirmacion)
-        {
-            var invitado = await _context.InvitadosEventos
-                .FirstOrDefaultAsync(i => i.EventoId == eventoId && i.UsuarioId == usuarioId);
-
-            if (invitado != null)
-            {
-                invitado.Confirmacion = confirmacion;
+                _context.Eventos.Update(eventoExistente);
                 await _context.SaveChangesAsync();
             }
         }
@@ -68,23 +62,6 @@ namespace SocialMediaApp.Persistencia.Repositorios
             if (evento != null)
             {
                 _context.Eventos.Remove(evento);
-                await _context.SaveChangesAsync();
-            }
-        }
-
-        // Modifica un evento existente
-        public async Task ModificarEventoAsync(Evento evento)
-        {
-            var eventoExistente = await _context.Eventos.FindAsync(evento.EventoId);
-            if (eventoExistente != null)
-            {
-                // Actualizamos los datos del evento existente con los nuevos valores
-                eventoExistente.Titulo = evento.Titulo;
-                eventoExistente.Descripcion = evento.Descripcion;
-                eventoExistente.Ubicacion = evento.Ubicacion;
-                eventoExistente.UsuarioId = evento.UsuarioId;
-
-                _context.Eventos.Update(eventoExistente);
                 await _context.SaveChangesAsync();
             }
         }

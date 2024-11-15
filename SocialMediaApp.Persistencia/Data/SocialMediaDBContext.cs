@@ -27,7 +27,7 @@ public partial class SocialMediaDBContext : DbContext
 
     public virtual DbSet<Mensaje> Mensajes { get; set; }
 
-    public virtual DbSet<Notificacione> Notificaciones { get; set; }
+    public virtual DbSet<Notificacione> Notificacione { get; set; }
 
     public virtual DbSet<Pago> Pagos { get; set; }
 
@@ -43,7 +43,7 @@ public partial class SocialMediaDBContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Server=TYRON;Database=SocialMediaDB;Trusted_Connection=True;Encrypt=False;");
+        => optionsBuilder.UseSqlServer("Server=DESKTOP-1RDEQCH\\SQLEXPRESS;Database=SocialMediaDB;Trusted_Connection=True;Encrypt=False;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -183,7 +183,7 @@ public partial class SocialMediaDBContext : DbContext
             entity.Property(e => e.Tipo).HasMaxLength(50);
             entity.Property(e => e.UsuarioId).HasColumnName("UsuarioID");
 
-            entity.HasOne(d => d.Usuario).WithMany(p => p.Notificaciones)
+            entity.HasOne(d => d.Usuario).WithMany(p => p.Notificacione)
                 .HasForeignKey(d => d.UsuarioId)
                 .HasConstraintName("FK__Notificac__Usuar__72C60C4A");
         });

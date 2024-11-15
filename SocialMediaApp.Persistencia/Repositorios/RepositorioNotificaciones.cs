@@ -14,16 +14,29 @@ namespace SocialMediaApp.Persistencia.Repositorios
         }
 
         // Agrega una nueva notificación
-        public async Task AgregarNotificacionAsync(Notificacione notificacione)
+        public async Task<int> insertar(Notificacione notificacion)
         {
-            _context.Notificaciones.Add(notificacione);
-            await _context.SaveChangesAsync();
+            _context.Add(notificacion);
+            return await _context.SaveChangesAsync();
+        }
+
+        // Obtiene una notificación específica por ID
+        public async Task<Notificacione?> ObtenerPorIdAsync(int notificacionId)
+        {
+            return await _context.Notificacione.Include(n => n.Usuario)
+                                                .FirstOrDefaultAsync(n => n.NotificacionId == notificacionId);
+        }
+
+        // Obtiene todas las notificaciones
+        public Task<List<Notificacione>> obtenerTodo()
+        {
+            return _context.Notificacione.Include(n => n.Usuario).ToListAsync();
         }
 
         // Marca una notificación como leída
-        public async Task MarcarNotificacionComoLeidaAsync(int Notificacionid)
+        public async Task MarcarNotificacionComoLeidaAsync(int notificacionId)
         {
-            var notificacion = await _context.Notificaciones.FindAsync(Notificacionid);
+            var notificacion = await _context.Notificacione.FindAsync(notificacionId);
             if (notificacion != null)
             {
                 notificacion.EsLeida = true;
@@ -31,50 +44,40 @@ namespace SocialMediaApp.Persistencia.Repositorios
             }
         }
 
-        // Obtiene todas las notificaciones de un usuario específico
-        public async Task<IEnumerable<Notificacione?>> ObtenerNotificacionesParaUsuarioAsync(int Usuarioid)
+        // Modifica una notificación existente
+        public async Task ModificarNotificacionAsync(Notificacione notificacion)
         {
-            return await _context.Notificaciones
-                .Where(n => n.UsuarioId == Usuarioid)
-                .ToListAsync();
+            var notificacionExistente = await _context.Notificacione.FindAsync(notificacion.NotificacionId);
+            if (notificacionExistente != null)
+            {
+                // Actualiza las propiedades de la notificación existente
+                notificacionExistente.Tipo = notificacion.Tipo;
+                notificacionExistente.Descripcion = notificacion.Descripcion;
+                notificacionExistente.Fecha = notificacion.Fecha;
+                notificacionExistente.EsLeida = notificacion.EsLeida;
+
+                _context.Notificacione.Update(notificacionExistente);
+                await _context.SaveChangesAsync();
+            }
         }
 
         // Elimina una notificación
         public async Task EliminarNotificacionAsync(int notificacionId)
         {
-            var notificacion = await _context.Notificaciones.FindAsync(notificacionId);
+            var notificacion = await _context.Notificacione.FindAsync(notificacionId);
             if (notificacion != null)
             {
-                _context.Notificaciones.Remove(notificacion);
+                _context.Notificacione.Remove(notificacion);
                 await _context.SaveChangesAsync();
             }
         }
 
-        public async Task<int> insertar(Notificacione notifacion)
+        // Obtiene todas las notificaciones de un usuario específico
+        public async Task<IEnumerable<Notificacione?>> ObtenerNotificacionesParaUsuarioAsync(int usuarioId)
         {
-            _context.Add(notifacion);
-            var res = _context.SaveChangesAsync();
-            return await res;
+            return await _context.Notificacione
+                .Where(n => n.UsuarioId == usuarioId)
+                .ToListAsync();
         }
-
-        public Task<List<Notificacione>> obtenerTodo()
-        {
-            return _context.Notificaciones.Include(c => c.Usuario).ToListAsync();
-        }
-
-        // Modifica una notificación existente
-        //public async Task ModificarNotificacionAsync(Notificaciones notificacion)
-        //{
-        //    var notificacionExistente = await _context.Notificaciones.FindAsync(notificacion.NotificacionId);
-        //    if (notificacionExistente != null)
-        //    {
-        //        // Actualiza las propiedades de la notificación existente
-        //        notificacionExistente.Fecha = notificacion.Fecha;
-        //        notificacionExistente.EsLeida = notificacion.EsLeida;
-
-        //        _context.Notificaciones.Update(notificacionExistente);
-        //        await _context.SaveChangesAsync();
-        //    }
-        //}
     }
 }

@@ -41,7 +41,7 @@ public partial class Usuario
 
     public virtual ICollection<Mensaje> MensajeReceptors { get; set; } = new List<Mensaje>();
 
-    public virtual ICollection<Notificacione> Notificaciones { get; set; } = new List<Notificacione>();
+    public virtual ICollection<Notificacione> Notificacione { get; set; } = new List<Notificacione>();
 
     public virtual ICollection<Pago> Pagos { get; set; } = new List<Pago>();
 

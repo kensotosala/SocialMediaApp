@@ -4,12 +4,25 @@ namespace SocialMediaApp.Dominio.Interfaces
 {
     public interface INotificaciones
     {
-        public Task<List<Notificacione>> obtenerTodo();
+        // Obtiene todas las notificaciones
+        Task<List<Notificacione>> obtenerTodo();
 
-        //public Task AgregarNotificacionAsync(Notificacione notificacione);
+        // Inserta una nueva notificación
+        Task<int> insertar(Notificacione notificacion);
 
-        //public Task MarcarNotificacionComoLeidaAsync(int Notificacionid);
+        // Obtiene una notificación específica por ID
+        Task<Notificacione?> ObtenerPorIdAsync(int notificacionId);
 
-        public Task<int> insertar(Notificacione notifacion);
+        // Marca una notificación como leída
+        Task MarcarNotificacionComoLeidaAsync(int notificacionId);
+
+        // Modifica una notificación existente
+        Task ModificarNotificacionAsync(Notificacione notificacion);
+
+        // Elimina una notificación por ID
+        Task EliminarNotificacionAsync(int notificacionId);
+
+        // Obtiene todas las notificaciones de un usuario específico
+        Task<IEnumerable<Notificacione?>> ObtenerNotificacionesParaUsuarioAsync(int usuarioId);
     }
 }

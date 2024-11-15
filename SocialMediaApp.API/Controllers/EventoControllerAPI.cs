@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using SocialMediaApp.Dominio.Interfaces;
 using SocialMediaApp.Persistencia.Data;
 
@@ -14,6 +13,7 @@ namespace SocialMediaApp.API.Controllers
         {
             _repEvento = repEvento;
         }
+
         // Obtiene los eventos de un usuario autenticado
         [HttpGet("mis-eventos")]
         public async Task<IActionResult> ObtenerMisEventos()
@@ -24,108 +24,44 @@ namespace SocialMediaApp.API.Controllers
         }
 
         // Crea un nuevo evento
-        [HttpPost("CrearEvento")]
+        [HttpPost("crear")]
         public async Task<IActionResult> CrearEvento(Evento evento)
         {
             await _repEvento.AgregarEventoAsync(evento);
             return CreatedAtAction(nameof(ObtenerMisEventos), new { id = evento.EventoId }, evento);
         }
 
-        // Invita a un usuario a un evento
-        [HttpPost("{eventoId}/invitar")]
-        public async Task<IActionResult> InvitarUsuario(int eventoId, int usuarioId)
+        // Obtiene un evento específico
+        [HttpGet("{eventoId}")]
+        public async Task<IActionResult> ObtenerEvento(int eventoId)
         {
-            await _repEvento.InvitarUsuarioAsync(eventoId, usuarioId);
-            return Ok();
+            var evento = await _repEvento.ObtenerEventoAsync(eventoId);
+            if (evento == null)
+            {
+                return NotFound();
+            }
+            return Ok(evento);
         }
 
-        // Confirma la asistencia de un usuario al evento
-        [HttpPut("{eventoId}/confirmar")]
-        public async Task<IActionResult> ConfirmarAsistencia(int eventoId, int usuarioId, [FromBody] string confirmacion)
+        // Modifica un evento existente
+        [HttpPut("modificar/{eventoId}")]
+        public async Task<IActionResult> ModificarEvento(int eventoId, [FromBody] Evento evento)
         {
-            await _repEvento.ConfirmarAsistenciaAsync(eventoId, usuarioId, confirmacion);
+            if (eventoId != evento.EventoId)
+            {
+                return BadRequest();
+            }
+
+            await _repEvento.ModificarEventoAsync(evento);
             return NoContent();
         }
 
-
-
-
-
-
-        /*
-        // GET: EventoControllerAPI
-        public ActionResult Index()
+        // Elimina un evento
+        [HttpDelete("eliminar/{eventoId}")]
+        public async Task<IActionResult> EliminarEvento(int eventoId)
         {
-            return View();
+            await _repEvento.EliminarEventoAsync(eventoId);
+            return NoContent();
         }
-
-        // GET: EventoControllerAPI/Details/5
-        public ActionResult Details(int id)
-        {
-            return View();
-        }
-
-        // GET: EventoControllerAPI/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: EventoControllerAPI/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        // GET: EventoControllerAPI/Edit/5
-        public ActionResult Edit(int id)
-        {
-            return View();
-        }
-
-        // POST: EventoControllerAPI/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        // GET: EventoControllerAPI/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: EventoControllerAPI/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }*/
     }
 }

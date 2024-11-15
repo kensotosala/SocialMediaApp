@@ -283,7 +283,7 @@ namespace SocialMediaApp.Persistencia.Migrations
 
                     b.HasIndex("UsuarioId");
 
-                    b.ToTable("Notificaciones");
+                    b.ToTable("Notificacione");
                 });
 
             modelBuilder.Entity("SocialMediaApp.Persistencia.Data.Pago", b =>
@@ -603,7 +603,7 @@ namespace SocialMediaApp.Persistencia.Migrations
             modelBuilder.Entity("SocialMediaApp.Persistencia.Data.Notificacione", b =>
                 {
                     b.HasOne("SocialMediaApp.Persistencia.Data.Usuario", "Usuario")
-                        .WithMany("Notificaciones")
+                        .WithMany("Notificacione")
                         .HasForeignKey("UsuarioId")
                         .HasConstraintName("FK__Notificac__Usuar__72C60C4A");
 
@@ -692,7 +692,7 @@ namespace SocialMediaApp.Persistencia.Migrations
 
                     b.Navigation("MensajeReceptors");
 
-                    b.Navigation("Notificaciones");
+                    b.Navigation("Notificacione");
 
                     b.Navigation("Pagos");
 

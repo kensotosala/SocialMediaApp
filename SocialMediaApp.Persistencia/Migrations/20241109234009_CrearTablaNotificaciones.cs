@@ -149,7 +149,7 @@ namespace SocialMediaApp.Persistencia.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Notificaciones",
+                name: "Notificacione",
                 columns: table => new
                 {
                     NotificacionID = table.Column<int>(type: "int", nullable: false)
@@ -367,7 +367,7 @@ namespace SocialMediaApp.Persistencia.Migrations
 
             migrationBuilder.CreateIndex(
                 name: "IX_Notificaciones_UsuarioID",
-                table: "Notificaciones",
+                table: "Notificacione",
                 column: "UsuarioID");
 
             migrationBuilder.CreateIndex(
@@ -433,7 +433,7 @@ namespace SocialMediaApp.Persistencia.Migrations
                 name: "Mensajes");
 
             migrationBuilder.DropTable(
-                name: "Notificaciones");
+                name: "Notificacione");
 
             migrationBuilder.DropTable(
                 name: "Pagos");
