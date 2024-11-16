@@ -59,14 +59,14 @@ namespace SocialMediaApp.Presentacion.Controllers
         // Método POST para invitar a un usuario a un evento específico
         // Ruta: api/Events/{eventId}/Invite/{userId}
         [HttpPost("{eventId}/Invite/{userId}")]
-        public async Task<IActionResult> InviteUser(int eventId, int userId)
+       /* public async Task<IActionResult> InviteUser(int eventId, int userId)
         {
             // Llama al método de servicio para invitar al usuario al evento
-            await _eventoService.InvitarUsuarioAsync(eventId, userId);
+            await _eventoService.InvitarUsuarioAsyn(eventId, userId);
 
             // Retorna un mensaje de éxito si el usuario ha sido invitado correctamente
             return Ok("Usuario invitado correctamente al evento.");
-        }
+        }*/
 
         // Método PUT para confirmar la asistencia de un usuario a un evento
         // Ruta: api/Events/{eventId}/ConfirmAttendance/{userId}
@@ -82,7 +82,7 @@ namespace SocialMediaApp.Presentacion.Controllers
             }
 
             // Llama al método de servicio para actualizar la confirmación de asistencia
-            await _eventoService.ConfirmarAsistenciaAsync(eventId, userId, confirmacion);
+            //await _eventoService.ConfirmarAsistenciaAsync(eventId, userId, confirmacion);
 
             // Retorna un mensaje de éxito si la confirmación se ha actualizado correctamente
             return Ok("Asistencia confirmada correctamente.");

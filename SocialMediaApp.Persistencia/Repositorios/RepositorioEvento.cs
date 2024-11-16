@@ -1,6 +1,7 @@
 ﻿using SocialMediaApp.Dominio.Interfaces;
 using SocialMediaApp.Persistencia.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace SocialMediaApp.Persistencia.Repositorios
 {
@@ -14,20 +15,20 @@ namespace SocialMediaApp.Persistencia.Repositorios
         }
 
         // Obtiene eventos creados por el usuario o eventos en los que está invitado
-        public async Task<IEnumerable<Evento>> ObtenerEventosParaUsuarioAsync(int usuarioId)
+        public async Task<Evento> ObtenerEventosParaUsuarioAsync(int eventoID)
         {
             return await _context.Eventos
-                .Include(e => e.InvitadosEventos)
-                .Where(e => e.UsuarioId == usuarioId || e.InvitadosEventos.Any(i => i.UsuarioId == usuarioId))
-                .ToListAsync();
+            .Include(e => e.InvitadosEventos)
+              .FirstOrDefaultAsync(e => e.EventoId == eventoID);
+
         }
 
         // Obtiene un evento específico
-        public async Task<Evento?> ObtenerEventoAsync(int eventoId)
+        public async Task<IEnumerable<Evento?>> ObtenerEventoAsync()
         {
             return await _context.Eventos
                 .Include(e => e.InvitadosEventos)
-                .FirstOrDefaultAsync(e => e.EventoId == eventoId);
+                .ToListAsync();
         }
 
         // Agrega un nuevo evento
@@ -65,5 +66,9 @@ namespace SocialMediaApp.Persistencia.Repositorios
                 await _context.SaveChangesAsync();
             }
         }
+
+       
+
+        
     }
 }

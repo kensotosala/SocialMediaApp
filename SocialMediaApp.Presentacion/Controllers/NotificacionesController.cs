@@ -49,28 +49,28 @@ namespace SocialMediaApp.Presentacion.Controllers
         }
 
         // POST: Eventos/Invitar
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Invitar(int eventoId, int usuarioId)
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+       /* public async Task<IActionResult> Invitar(int eventoId, int usuarioId)
         {
             await _eventoRepositorio.InvitarUsuarioAsync(eventoId, usuarioId);
             return RedirectToAction(nameof(MisEventos));
-        }
+        }*/
 
         // GET: Eventos/ConfirmarAsistencia
-        public IActionResult ConfirmarAsistencia(int eventoId)
-        {
-            ViewData["EventoId"] = eventoId;
-            return View();
-        }
+        //public IActionResult ConfirmarAsistencia(int eventoId)
+        //{
+        //    ViewData["EventoId"] = eventoId;
+        //    return View();
+        //}
 
         // POST: Eventos/ConfirmarAsistencia
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ConfirmarAsistencia(int eventoId, int usuarioId, string confirmacion)
-        {
-            await _eventoRepositorio.ConfirmarAsistenciaAsync(eventoId, usuarioId, confirmacion);
-            return RedirectToAction(nameof(MisEventos));
-        }
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> ConfirmarAsistencia(int eventoId, int usuarioId, string confirmacion)
+        //{
+        //    await _eventoRepositorio.ConfirmarAsistenciaAsync(eventoId, usuarioId, confirmacion);
+        //    return RedirectToAction(nameof(MisEventos));
+        //}
     }
 }

@@ -18,8 +18,8 @@ namespace SocialMediaApp.API.Controllers
         [HttpGet("mis-eventos")]
         public async Task<IActionResult> ObtenerMisEventos()
         {
-            var usuarioId = int.Parse(User.Identity.Name);
-            var eventos = await _repEvento.ObtenerEventosParaUsuarioAsync(usuarioId);
+            
+            var eventos = await _repEvento.ObtenerEventoAsync();
             return Ok(eventos);
         }
 
@@ -35,7 +35,7 @@ namespace SocialMediaApp.API.Controllers
         [HttpGet("{eventoId}")]
         public async Task<IActionResult> ObtenerEvento(int eventoId)
         {
-            var evento = await _repEvento.ObtenerEventoAsync(eventoId);
+            var evento = await _repEvento.ObtenerEventosParaUsuarioAsync(eventoId);
             if (evento == null)
             {
                 return NotFound();
