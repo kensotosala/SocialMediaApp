@@ -15,7 +15,7 @@ namespace SocialMediaApp.API.Controllers
         }
 
         // Obtiene los eventos de un usuario autenticado
-        [HttpGet("mis-eventos")]
+        [HttpGet("obtnerTodosLosEventos")]
         public async Task<IActionResult> ObtenerMisEventos()
         {
             
@@ -32,7 +32,7 @@ namespace SocialMediaApp.API.Controllers
         }
 
         // Obtiene un evento específico
-        [HttpGet("{eventoId}")]
+        [HttpGet("ObtenerEventosPorID")]
         public async Task<IActionResult> ObtenerEvento(int eventoId)
         {
             var evento = await _repEvento.ObtenerEventosParaUsuarioAsync(eventoId);
@@ -44,7 +44,7 @@ namespace SocialMediaApp.API.Controllers
         }
 
         // Modifica un evento existente
-        [HttpPut("modificar/{eventoId}")]
+        [HttpPut("ModificarXID")]
         public async Task<IActionResult> ModificarEvento(int eventoId, [FromBody] Evento evento)
         {
             if (eventoId != evento.EventoId)
@@ -57,11 +57,24 @@ namespace SocialMediaApp.API.Controllers
         }
 
         // Elimina un evento
-        [HttpDelete("eliminar/{eventoId}")]
+        [HttpDelete("EliminarXID")]
         public async Task<IActionResult> EliminarEvento(int eventoId)
         {
             await _repEvento.EliminarEventoAsync(eventoId);
             return NoContent();
+        }
+        [HttpPost("invitar al usuario")]
+        public async Task<IActionResult> InvitarUsuario(int eventoId, int usuarioId)
+        {
+            try
+            {
+                await _repEvento.InvitarUsuarioAsync(eventoId, usuarioId);
+                return Ok(new { message = "Usuario invitado exitosamente." });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
     }
 }

@@ -66,9 +66,39 @@ namespace SocialMediaApp.Persistencia.Repositorios
                 await _context.SaveChangesAsync();
             }
         }
+        public async Task InvitarUsuarioAsync(int eventoId, int usuarioId)
+        {
+            // Validar si el evento existe
+            var evento = await _context.Eventos.FindAsync(eventoId);
+            if (evento == null)
+            {
+                throw new Exception("El evento no existe.");
+            }
 
-       
+            // Validar si el usuario ya está invitado
+            var invitacionExistente = await _context.InvitadosEventos
+                .FirstOrDefaultAsync(i => i.EventoId == eventoId && i.UsuarioId == usuarioId);
 
-        
+            if (invitacionExistente != null)
+            {
+                throw new Exception("El usuario ya está invitado a este evento.");
+            }
+
+            // Crear la nueva invitación
+            var nuevaInvitacion = new InvitadosEvento
+            {
+                EventoId = eventoId,
+                UsuarioId = usuarioId,
+                Confirmacion = "Pendiente" // Estado inicial
+            };
+
+            // Agregar la invitación a la base de datos
+            _context.InvitadosEventos.Add(nuevaInvitacion);
+            await _context.SaveChangesAsync();
+        }
+
+
+
+
     }
 }

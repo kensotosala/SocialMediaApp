@@ -9,6 +9,7 @@ namespace SocialMediaApp.Dominio.Interfaces
         Task AgregarEventoAsync(Evento evento);
         Task ModificarEventoAsync(Evento evento);
         Task EliminarEventoAsync(int eventoId);
-        
+        Task InvitarUsuarioAsync(int eventoId, int usuarioId);
+
     }
 }
