@@ -16,12 +16,12 @@ namespace SocialMediaApp.API.Controllers
         }
 
         // Marca una notificación como leída
-        //[HttpPut("{id}/marcar-leida")]
-        //public async Task<IActionResult> MarcarNotificacionComoLeida(int id)
-        //{
-        //    await _repNotificaciones.MarcarNotificacionComoLeidaAsync(id);
-        //    return NoContent();
-        //}
+        [HttpPut("{id}/marcar-leida")]
+        public async Task<IActionResult> MarcarNotificacionComoLeida(int id)
+        {
+            await _repNotificaciones.MarcarNotificacionComoLeidaAsync(id);
+            return NoContent();
+        }
 
         // Obtener todas las notificaciones
         [HttpGet("ObtenerNotificaciones")]
