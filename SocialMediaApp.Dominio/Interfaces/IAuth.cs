@@ -9,9 +9,7 @@ namespace SocialMediaApp.Dominio.Interfaces
 {
     public interface IAuth
     {
-        public Task<int> Register(Usuario user);
-        
-        public int Login(string username, string password);
+        public Task<int> Register(Usuario user);       
 
         public Task<Usuario?> getByUsername(string username);
 

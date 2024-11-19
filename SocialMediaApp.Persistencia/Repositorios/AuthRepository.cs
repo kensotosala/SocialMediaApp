@@ -18,11 +18,6 @@ namespace SocialMediaApp.Persistencia.Repositorios
             _context = context;
         }
 
-        public int Login(string username, string password)
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task<int> Register(Usuario user)
         {
             _context.Add(user);

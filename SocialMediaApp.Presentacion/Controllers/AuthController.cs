@@ -1,7 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using SocialMediaApp.Dominio.Dto;
 using SocialMediaApp.Persistencia.Data;
+using System.Linq.Expressions;
+using System.Security.Claims;
 using System.Text;
 
 namespace SocialMediaApp.Presentacion.Controllers
@@ -15,18 +20,80 @@ namespace SocialMediaApp.Presentacion.Controllers
             _httpClient = httpClient;
         }
 
-        public IActionResult Index()
+        [HttpGet]
+        [Authorize]
+        public IActionResult Profile()
         {
             return View();
         }
 
         [HttpGet]
+        [AllowAnonymous]
+        public IActionResult Login()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        public async Task<IActionResult> Login(string username, string password)
+        {
+            if (ModelState.IsValid)
+            {
+                string url = "http://localhost:5142/api/APIAuth/GetByUsername/" + username;
+
+                HttpResponseMessage response = await _httpClient.GetAsync(url);
+
+                UserDto userResult = await response.Content.ReadFromJsonAsync<UserDto>();
+
+                if (userResult == null)
+                {
+                    TempData["Mensaje"] = "El nombre de usuario no está registrado.";
+                    TempData["TipoMensaje"] = "alert-danger";
+                }
+                else
+                {
+                    if (userResult.Contraseña == password)
+                    {
+                        TempData["Mensaje"] = $"Bienvenido de nuevo {username}.";
+                        TempData["TipoMensaje"] = "alert-primary";
+
+                        RegisterClaims(userResult);
+
+                        return RedirectToAction("Index", "Home");
+                    }
+                    else
+                    {
+                        TempData["Mensaje"] = "Contraseña incorrecta.";
+                        TempData["TipoMensaje"] = "alert-danger";
+                    }
+                }
+            }
+            return RedirectToAction("Login", "Auth");
+        }
+
+        private async void RegisterClaims(UserDto userDto)
+        {
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.NameIdentifier, userDto.NombreUsuario)
+            };
+
+            var claimIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
+                new ClaimsPrincipal(claimIdentity));
+        }
+
+        [HttpGet]
+        [AllowAnonymous]
         public ActionResult Register()
         {
             return View();
         }
 
         [HttpPost]
+        [AllowAnonymous]
         public async Task<IActionResult> Register(Usuario user)
         {
             if (ModelState.IsValid)
@@ -47,7 +114,7 @@ namespace SocialMediaApp.Presentacion.Controllers
 
                     if (response.IsSuccessStatusCode)
                     {
-                        TempData["Mensaje"] = $"Bienvenido {user.NombreUsuario}";
+                        TempData["Mensaje"] = $"Bienvenido {user.NombreUsuario}.";
                         TempData["TipoMensaje"] = "alert-primary";
 
                         return RedirectToAction("Index", "Home");
@@ -56,8 +123,6 @@ namespace SocialMediaApp.Presentacion.Controllers
                     {
                         TempData["Mensaje"] = "No se pudo crear la cuenta.";
                         TempData["TipoMensaje"] = "alert-danger";
-
-                        return RedirectToAction("Register", "AuthController");
                     }
                 }
                 else
