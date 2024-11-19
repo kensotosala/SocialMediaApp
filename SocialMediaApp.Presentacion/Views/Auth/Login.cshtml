@@ -1,4 +1,4 @@
-﻿@model SocialMediaApp.Persistencia.Data.Usuario
+﻿@model SocialMediaApp.Dominio.ViewModels.UserLoginViewModel
 
 @{
     ViewData["Title"] = "Iniciar Sesión";
@@ -18,21 +18,22 @@
 
     <div class="form-group">
         <label asp-for="NombreUsuario">Nombre de Usuario:</label>
-        <input id="username" name="username" class="form-control" required />
+        <input asp-for="NombreUsuario" class="form-control"/>
+        <span asp-validation-for="NombreUsuario" class="text-danger"></span>
     </div>
 
     <div class="form-group">
         <label asp-for="Contraseña">Contraseña:</label>
-        <input id="password" name="password" class="form-control" required />
+        <input type="password" asp-for="Contraseña" class="form-control"/>
+        <span asp-validation-for="Contraseña" class="text-danger"></span>
     </div>
 
     <button type="submit" class="btn btn-primary">Iniciar Sesión</button>
 </form>
 
-@if (!ViewData.ModelState.IsValid)
-{
-    <div class="text-danger">
-        @ViewData.ModelState[""].Errors[0].ErrorMessage
-    </div>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
 

@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using SocialMediaApp.Dominio.Dto;
 using SocialMediaApp.Dominio.Interfaces;
 using SocialMediaApp.Persistencia.Data;
 
@@ -26,11 +25,11 @@ namespace SocialMediaApp.API.Controllers
         {
             var response = await _authRep.getByUsername(username);
             
-            UserDto userDto = null;
+            Usuario user = null;
 
             if (response != null)
             {
-                userDto = new UserDto()
+                user = new Usuario()
                 {
                     NombreUsuario = response.NombreUsuario,
                     Email = response.Email,
@@ -38,7 +37,7 @@ namespace SocialMediaApp.API.Controllers
                 };
             }
 
-            var jsonResponse = JsonConvert.SerializeObject(userDto);
+            var jsonResponse = JsonConvert.SerializeObject(user);
 
             return Content(jsonResponse, "application/json");
         }
@@ -50,11 +49,11 @@ namespace SocialMediaApp.API.Controllers
         {
             var response = await _authRep.getByEmail(email);
 
-            UserDto userDto = null;
+            Usuario user = null;
 
             if (response != null)
             {
-                userDto = new UserDto()
+                user = new Usuario()
                 {
                     NombreUsuario = response.NombreUsuario,
                     Email = response.Email,
@@ -62,7 +61,7 @@ namespace SocialMediaApp.API.Controllers
                 };
             }
 
-            var jsonResponse = JsonConvert.SerializeObject(userDto);
+            var jsonResponse = JsonConvert.SerializeObject(user);
 
             return Content(jsonResponse, "application/json");
         }

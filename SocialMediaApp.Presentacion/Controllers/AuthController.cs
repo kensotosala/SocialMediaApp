@@ -3,9 +3,8 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using SocialMediaApp.Dominio.Dto;
+using SocialMediaApp.Dominio.ViewModels;
 using SocialMediaApp.Persistencia.Data;
-using System.Linq.Expressions;
 using System.Security.Claims;
 using System.Text;
 
@@ -36,15 +35,15 @@ namespace SocialMediaApp.Presentacion.Controllers
 
         [HttpPost]
         [AllowAnonymous]
-        public async Task<IActionResult> Login(string username, string password)
+        public async Task<IActionResult> Login(UserLoginViewModel user)
         {
             if (ModelState.IsValid)
             {
-                string url = "http://localhost:5142/api/APIAuth/GetByUsername/" + username;
+                string url = "http://localhost:5142/api/APIAuth/GetByUsername/" + user.NombreUsuario;
 
                 HttpResponseMessage response = await _httpClient.GetAsync(url);
 
-                UserDto userResult = await response.Content.ReadFromJsonAsync<UserDto>();
+                Usuario userResult = await response.Content.ReadFromJsonAsync<Usuario>();
 
                 if (userResult == null)
                 {
@@ -53,9 +52,9 @@ namespace SocialMediaApp.Presentacion.Controllers
                 }
                 else
                 {
-                    if (userResult.Contraseña == password)
+                    if (userResult.Contraseña == user.Contraseña)
                     {
-                        TempData["Mensaje"] = $"Bienvenido de nuevo {username}.";
+                        TempData["Mensaje"] = $"Bienvenido de nuevo {user.NombreUsuario}.";
                         TempData["TipoMensaje"] = "alert-primary";
 
                         RegisterClaims(userResult);
@@ -72,11 +71,11 @@ namespace SocialMediaApp.Presentacion.Controllers
             return RedirectToAction("Login", "Auth");
         }
 
-        private async void RegisterClaims(UserDto userDto)
+        private async void RegisterClaims(Usuario user)
         {
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.NameIdentifier, userDto.NombreUsuario)
+                new Claim(ClaimTypes.NameIdentifier, user.NombreUsuario)
             };
 
             var claimIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
@@ -94,7 +93,7 @@ namespace SocialMediaApp.Presentacion.Controllers
 
         [HttpPost]
         [AllowAnonymous]
-        public async Task<IActionResult> Register(Usuario user)
+        public async Task<IActionResult> Register(UserRegisterViewModel user)
         {
             if (ModelState.IsValid)
             {
@@ -116,6 +115,14 @@ namespace SocialMediaApp.Presentacion.Controllers
                     {
                         TempData["Mensaje"] = $"Bienvenido {user.NombreUsuario}.";
                         TempData["TipoMensaje"] = "alert-primary";
+
+                        RegisterClaims(new Usuario
+                        {
+                            NombreUsuario = user.NombreUsuario,
+                            Email = user.Email,
+                            Contraseña = user.Contraseña,
+                            FechaRegistro = DateTime.Now
+                        });
 
                         return RedirectToAction("Index", "Home");
                     }
@@ -147,7 +154,7 @@ namespace SocialMediaApp.Presentacion.Controllers
 
             HttpResponseMessage response = await _httpClient.GetAsync(url);
 
-            UserDto userResult = await response.Content.ReadFromJsonAsync<UserDto>();
+            Usuario userResult = await response.Content.ReadFromJsonAsync<Usuario>();
 
             return (userResult != null);
         }
@@ -159,7 +166,7 @@ namespace SocialMediaApp.Presentacion.Controllers
 
             HttpResponseMessage response = await _httpClient.GetAsync(url);
 
-            UserDto userResult = await response.Content.ReadFromJsonAsync<UserDto>();
+            Usuario userResult = await response.Content.ReadFromJsonAsync<Usuario>();
 
             return (userResult != null);
         }
