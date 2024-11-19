@@ -1,0 +1,43 @@
+﻿@model SocialMediaApp.Persistencia.Data.Usuario
+
+@{
+    ViewData["Title"] = "Registrar cuenta";
+}
+
+<h2>Registrar cuenta</h2>
+
+@if (TempData["Mensaje"] != null)
+{
+    <div class="alert @TempData["TipoMensaje"]" role="alert">
+        @TempData["Mensaje"]
+    </div>
+}
+
+<form asp-action="Register" method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <div class="form-group">
+        <label asp-for="NombreUsuario">Nombre de Usuario:</label>
+        <input asp-for="NombreUsuario" class="form-control" required />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Email">Correo electrónico:</label>
+        <input asp-for="Email" class="form-control" required />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Contraseña">Contraseña:</label>
+        <input asp-for="Contraseña" class="form-control" required />
+    </div>
+
+    <button type="submit" value="Register" class="btn btn-primary">Registrarse</button>
+</form>
+
+@if (!ViewData.ModelState.IsValid)
+{
+    <div class="text-danger">
+        @ViewData.ModelState[""].Errors[0].ErrorMessage
+    </div>
+}
+
