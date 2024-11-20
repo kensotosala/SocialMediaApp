@@ -125,6 +125,7 @@
             animation: fadeIn 0.3s ease-in;
         }
 
+
         .remove-interest {
             cursor: pointer;
             color: #666;
@@ -222,15 +223,7 @@
             padding-top: 2rem;
             border-top: 1px solid #ddd;
         }
-            .container {
-                margin: 1rem auto;
-            }
 
-            .profile-header,
-            .profile-form {
-                padding: 1rem;
-            }
-        }
 
         * {
             margin: 0;
@@ -343,31 +336,580 @@
             <div class="form-group">
                 <label class="form-label">Intereses</label>
                 <div class="interest-input-container">
-                    <input type="text" class="interest-input" id="interest-input"
+                    <input type="text"
+                           class="interest-input"
+                           id="interest-input"
                            placeholder="Escribe un interés y presiona Enter">
-                    <div class="interests-container">
-                        <div class="interest-tag">
-                            Desarrollo web
-                            <span class="remove-interest">×</span>
-                        </div>
-                        <div class="interest-tag">
-                            Diseño UI/UX
-                            <span class="remove-interest">×</span>
-                        </div>
-                        <div class="interest-tag">
-                            Microsoft Azure
-                            <span class="remove-interest">×</span>
-                        </div>
-                        <div class="interest-suggestions" id="interest-suggestions"></div>
-                    </div>
-                    <small class="max-interests-warning" id="max-interests-warning">
-                        Has alcanzado el máximo de 10 intereses permitidos.
-                    </small>
-                    <small class="duplicate-interest-warning" id="duplicate-warning">
-                        Este interés ya está en tu lista.
-                    </small>
-                    <div class="interests-container" id="interests-container"></div>
+                    <div class="interest-suggestions" id="interest-suggestions"></div>
                 </div>
+                <small class="max-interests-warning" id="max-interests-warning">
+                    Has alcanzado el máximo de 10 intereses permitidos.
+                </small>
+                <small class="duplicate-interest-warning" id="duplicate-warning">
+                    Este interés ya está en tu lista.
+                </small>
+                <div class="interests-container" id="interests-container"></div>
+            </div>
+
+
+                <div class="password-section">
+                    <h2 class="profile-title">Cambiar contraseña</h2>
+                    <div class="form-group">
+                        <label class="form-label" for="current-password">Contraseña actual</label>
+                        <input type="password" id="current-password" class="form-control">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="new-password">Nueva contraseña</label>
+                        <input type="password" id="new-password" class="form-control">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="confirm-password">Confirmar nueva contraseña</label>
+                        <input type="password" id="confirm-password" class="form-control">
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-save">Guardar cambios</button>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const uploadBtn = document.getElementById('upload-btn');
+            const profileImage = document.getElementById('profile-image');
+            const interestInput = document.getElementById('interest-input');
+            const maxWarning = document.getElementById('max-interests-warning');
+            const duplicateWarning = document.getElementById('duplicate-warning');
+            const suggestionsContainer = document.getElementById('interest-suggestions');
+
+            uploadBtn.addEventListener('click', function () {
+                // Crear un input de archivo temporal
+                const fileInput = document.createElement('input');
+                fileInput.type = 'file';
+                fileInput.accept = 'image/*';
+
+                fileInput.onchange = function (e) {
+                    const file = e.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function (event) {
+                            profileImage.src = event.target.result;
+                            // Ocultar el botón después de seleccionar la imagen
+                            uploadBtn.classList.add('hidden');
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                };
+
+                fileInput.click();
+            });
+
+            // Prevenir el arrastre de imágenes por defecto
+            const preventDefaults = e => {
+                e.preventDefault();
+                e.stopPropagation();
+            };
+
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                document.getElementById('profile-image-wrapper').addEventListener(eventName, preventDefaults, false);
+            });
+
+
+            // Manejo de intereses
+            const interesesInput = document.getElementById('intereses');
+            const interestsContainer = document.querySelector('.interests-container');
+
+            interesesInput.addEventListener('keypress', function (e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    if (this.value.trim()) {
+                        addInterest(this.value.trim());
+                        this.value = '';
+                    }
+                }
+            });
+
+            // Función para agregar intereses
+            function addInterest(text) {
+                const interestTag = document.createElement('div');
+                interestTag.className = 'interest-tag';
+                interestTag.innerHTML = `
+                    ${text}
+                    <span class="remove-interest">×</span>
+                `;
+                interestsContainer.appendChild(interestTag);
+
+                // Agregar evento para eliminar interés
+                interestTag.querySelector('.remove-interest').addEventListener('click', function () {
+                    interestTag.remove();
+                });
+            }
+
+            // Evento para eliminar intereses existentes
+            document.querySelectorAll('.remove-interest').forEach(button => {
+                button.addEventListener('click', function () {
+                    this.parentElement.remove();
+                });
+            });
+
+            // Prevenir envío del formulario por defecto
+            document.querySelector('form').addEventListener('submit', function (e) {
+                e.preventDefault();
+                alert('Cambios guardados exitosamente');
+            });
+            // Sugerencias predefinidas
+            const suggestions = [
+                "Programación", "Desarrollo web", "JavaScript", "Python", "React",
+                "Node.js", "Base de datos", "UI/UX", "Diseño gráfico", "Marketing digital",
+                "SEO", "Redes sociales", "Análisis de datos", "Machine Learning",
+                "Inteligencia Artificial", "Cloud Computing", "DevOps", "Ciberseguridad",
+                "Blockchain", "IoT"
+            ];
+
+            const MAX_INTERESTS = 10;
+            let currentInterests = [];
+
+            function addInterest(interest) {
+                // Validaciones
+                if (currentInterests.length >= MAX_INTERESTS) {
+                    maxWarning.style.display = 'block';
+                    setTimeout(() => maxWarning.style.display = 'none', 3000);
+                    return;
+                }
+
+                if (currentInterests.includes(interest.toLowerCase())) {
+                    duplicateWarning.style.display = 'block';
+                    setTimeout(() => duplicateWarning.style.display = 'none', 3000);
+                    return;
+                }
+
+                // Crear y añadir el tag
+                const interestTag = document.createElement('div');
+                interestTag.className = 'interest-tag';
+                interestTag.innerHTML = `
+                    ${interest}
+                    <span class="remove-interest" title="Eliminar interés">×</span>
+                `;
+
+                interestsContainer.appendChild(interestTag);
+                currentInterests.push(interest.toLowerCase());
+
+                // Evento para eliminar
+                interestTag.querySelector('.remove-interest').addEventListener('click', function() {
+                    interestTag.remove();
+                    currentInterests = currentInterests.filter(i => i !== interest.toLowerCase());
+                    maxWarning.style.display = 'none';
+                });
+            }
+
+            // Manejar entrada de intereses
+            interestInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    const interest = this.value.trim();
+                    if (interest) {
+                        addInterest(interest);
+                        this.value = '';
+                        suggestionsContainer.style.display = 'none';
+                    }
+                }
+            });
+
+            // Sistema de sugerencias
+            interestInput.addEventListener('input', function() {
+                const value = this.value.toLowerCase();
+                if (value.length < 2) {
+                    suggestionsContainer.style.display = 'none';
+                    return;
+                }
+
+                const matchingSuggestions = suggestions.filter(s =>
+                    s.toLowerCase().includes(value) &&
+                    !currentInterests.includes(s.toLowerCase())
+                );
+
+                if (matchingSuggestions.length > 0) {
+                    suggestionsContainer.innerHTML = matchingSuggestions
+                        .map(s => `<div class="suggestion-item">${s}</div>`)
+                        .join('');
+                    suggestionsContainer.style.display = 'block';
+
+                    // Eventos para las sugerencias
+                    suggestionsContainer.querySelectorAll('.suggestion-item').forEach(item => {
+                        item.addEventListener('click', function() {
+                            addInterest(this.textContent);
+                            interestInput.value = '';
+                            suggestionsContainer.style.display = 'none';
+                        });
+                    });
+                } else {
+                    suggestionsContainer.style.display = 'none';
+                }
+            });
+
+            // Cerrar sugerencias al hacer clic fuera
+            document.addEventListener('click', function(e) {
+                if (!interestInput.contains(e.target) && !suggestionsContainer.contains(e.target)) {
+                    suggestionsContainer.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+
+</html><!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestionar Perfil</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f0f2f5;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .profile-header {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        .profile-title {
+            font-size: 1.5rem;
+            color: #333;
+            margin-bottom: 1rem;
+        }
+
+        .profile-image-container {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .profile-image {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .upload-btn {
+            background-color: #0078d4;
+            color: white;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .upload-btn:hover {
+            background-color: #106ebe;
+        }
+
+        .profile-form {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #555;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #0078d4;
+        }
+
+        textarea.form-control {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .interests-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+            min-height: 40px;
+        }
+
+        .interest-tag {
+            background-color: #e1e1e1;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+
+        .remove-interest {
+            cursor: pointer;
+            color: #666;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background-color: #d3d3d3;
+            margin-left: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .remove-interest:hover {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .interest-input-container {
+            position: relative;
+            margin-bottom: 0.5rem;
+        }
+
+        .interest-suggestions {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            max-height: 200px;
+            overflow-y: auto;
+            display: none;
+        }
+
+        .suggestion-item {
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .suggestion-item:hover {
+            background-color: #f0f2f5;
+        }
+
+        .interest-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .interest-input:focus {
+            outline: none;
+            border-color: #0078d4;
+        }
+
+        .max-interests-warning {
+            color: #dc3545;
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+            display: none;
+        }
+
+        .duplicate-interest-warning {
+            color: #dc3545;
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+            display: none;
+        }
+
+        .btn-save {
+            background-color: #0078d4;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s;
+        }
+
+        .btn-save:hover {
+            background-color: #106ebe;
+        }
+
+        .password-section {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid #ddd;
+        }
+
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f0f2f5;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .profile-header {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .profile-title {
+            font-size: 1.5rem;
+            color: #333;
+            margin-bottom: 1rem;
+        }
+
+        .profile-image-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .profile-image {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .upload-btn {
+            background-color: #0078d4;
+            color: white;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .upload-btn:hover {
+            background-color: #106ebe;
+        }
+
+        .upload-btn.hidden {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="profile-header">
+            <h1 class="profile-title">Gestionar Perfil</h1>
+            <div class="profile-image-container">
+                <img src="/api/placeholder/150/150" alt="Foto de perfil" class="profile-image" id="profile-image">
+                <button class="upload-btn" id="upload-btn">
+                    <i class="fas fa-camera"></i> Agregar foto
+                </button>
+            </div>
+        </div>
+
+        <form class="profile-form">
+            <div class="form-group">
+                <label class="form-label" for="nombre">Nombre completo</label>
+                <input type="text" id="nombre" class="form-control" placeholder="Tu nombre completo">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="biografia">Biografía</label>
+                <textarea id="biografia" class="form-control" placeholder="Cuéntanos sobre ti..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="ubicacion">Ubicación</label>
+                <input type="text" id="ubicacion" class="form-control" placeholder="Tu ubicación">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="email">Correo electrónico</label>
+                <input type="email" id="email" class="form-control" placeholder="tu@gmail.com">
+            </div>
+
+            <!-- Intereses-->
+            <div class="form-group">
+                <label class="form-label">Intereses</label>
+                <div class="interest-input-container">
+                    <input type="text"
+                           class="interest-input"
+                           id="interest-input"
+                           placeholder="Escribe un interés y presiona Enter">
+                    <div class="interest-suggestions" id="interest-suggestions"></div>
+                </div>
+                <small class="max-interests-warning" id="max-interests-warning">
+                    Has alcanzado el máximo de 10 intereses permitidos.
+                </small>
+                <small class="duplicate-interest-warning" id="duplicate-warning">
+                    Este interés ya está en tu lista.
+                </small>
+                <div class="interests-container" id="interests-container"></div>
+            </div>
 
 
                 <div class="password-section">

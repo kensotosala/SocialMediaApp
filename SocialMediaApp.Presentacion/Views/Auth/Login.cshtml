@@ -6,6 +6,237 @@
 
 <h2>Iniciar sesión</h2>
 
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Social Media Login</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(45deg, #575ec5, #39c24b, #53c599); /* Cambiar a la Paleta este es el fondo */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            display: flex;
+            justify-content: space-between;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+        }
+
+        .welcome-side {
+            flex: 1;
+            padding: 40px;
+            background: linear-gradient(135deg, #833ab4, #1ec979); /* Cambiar a la Paleta este es el Bienvenido de Vuelta */
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+            .welcome-side h1 {
+                font-size: 2.5em;
+                margin-bottom: 20px;
+                position: relative;
+                z-index: 1;
+            }
+
+            .welcome-side p {
+                font-size: 1.2em;
+                margin-bottom: 30px;
+                line-height: 1.6;
+                position: relative;
+                z-index: 1;
+            }
+
+        .login-side {
+            flex: 1;
+            padding: 40px;
+            background: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .login-form {
+            width: 100%;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+            .form-header h2 {
+                font-size: 2em;
+                color: #333;
+                margin-bottom: 10px;
+            }
+
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+            .form-group input {
+                width: 100%;
+                padding: 15px;
+                border: 2px solid #e1e1e1;
+                border-radius: 12px;
+                font-size: 1em;
+                transition: all 0.3s ease;
+                background: #f8f9fa;
+            }
+
+                .form-group input:focus {
+                    border-color: #75d394;
+                    outline: none;
+                    box-shadow: 0 0 0 3px rgba(131, 58, 180, 0.1);
+                }
+
+        .login-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(45deg, #2bc477, #adc557); /* Cambiar a la Paleta BOTON */
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s;
+            margin-bottom: 20px;
+        }
+
+            .login-btn:hover {
+                transform: translateY(-2px);
+            }
+
+        .social-login {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .social-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px;
+            border-radius: 12px;
+            border: 2px solid #e1e1e1;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            gap: 10px;
+        }
+
+            .social-btn:hover {
+                background: #f8f9fa;
+                transform: translateY(-2px);
+            }
+
+        .google-btn {
+            color: #757575;
+        }
+
+        .circles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+            .circles div {
+                position: absolute;
+                border-radius: 50%;
+                background: rgba(255, 255, 255, 0.1);
+            }
+
+                .circles div:nth-child(1) {
+                    width: 200px;
+                    height: 200px;
+                    top: -50px;
+                    right: -50px;
+                }
+
+                .circles div:nth-child(2) {
+                    width: 150px;
+                    height: 150px;
+                    bottom: 50px;
+                    left: -50px;
+                }
+
+        
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="welcome-side">
+            <div class="circles">
+                <div></div>
+                <div></div>
+            </div>
+            <h1>¡Bienvenido de vuelta!</h1>
+            <p>Conecta con tus amigos, comparte momentos especiales y descubre contenido increíble en nuestra comunidad.</p>
+        </div>
+
+        <div class="login-side">
+
+            <div class="form-header">
+                <h2>Iniciar Sesión</h2>
+                <p>¡Nos alegra verte de nuevo!</p>
+            </div>
+            <form class="login-form">
+                <form asp-action="Login" method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                    <div class="form-group">
+                        <label asp-for="NombreUsuario">Nombre de Usuario:</label>
+                        <input asp-for="NombreUsuario" class="form-control" />
+                        <span asp-validation-for="NombreUsuario" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="Contraseña">Contraseña:</label>
+                        <input type="password" asp-for="Contraseña" class="form-control" />
+                        <span asp-validation-for="Contraseña" class="text-danger"></span>
+                    </div>
+                </form>
+
+                <button type="submit" class="login-btn">Iniciar Sesión</button>
+            </form>
+        </div>
+    </div>
+
+</body>
+
+</html>
+
 @if (TempData["Mensaje"] != null)
 {
     <div class="alert @TempData["TipoMensaje"]" role="alert">
@@ -13,23 +244,6 @@
     </div>
 }
 
-<form asp-action="Login" method="post">
-    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-
-    <div class="form-group">
-        <label asp-for="NombreUsuario">Nombre de Usuario:</label>
-        <input asp-for="NombreUsuario" class="form-control"/>
-        <span asp-validation-for="NombreUsuario" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="Contraseña">Contraseña:</label>
-        <input type="password" asp-for="Contraseña" class="form-control"/>
-        <span asp-validation-for="Contraseña" class="text-danger"></span>
-    </div>
-
-    <button type="submit" class="btn btn-primary">Iniciar Sesión</button>
-</form>
 
 @section Scripts {
     @{
