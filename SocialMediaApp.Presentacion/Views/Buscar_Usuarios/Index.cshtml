@@ -7,26 +7,35 @@
 </head>
 <body>
     <div class="container mt-4">
-        <table class="table table-striped">
-            <thead>
-                <tr class="titles">
-                    <th>Foto</th>
-                    <th>Nombre</th>
-                    <th>Ubicación</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody class="table">
-                <!-- Suponiendo que los datos son generados dinámicamente -->
-                <tr>
-                    <td class="foto"><img width="55" height="55" src="https://elcomercio.pe/resizer/hFKtKd1z4AE95hbFL3qjLjYH66Q=/620x0/smart/filters:format(jpeg):quality(75)/cloudfront-us-east-1.images.arcpublishing.com/elcomercio/7SC7HSDCZZEMVFMZPI34DC5IGM.jpg" alt="image" /></td>
-                    <td class="nombre"><span>Luis Salazar</span></td>
-                    <td class="ubicacion"><span>San José Alajuelita</span></td>
-                    <td class="accion"><button>Agregar a amigos</button></td>
-                </tr>
+        <h2>Resultados de la Búsqueda</h2>
 
-                <!-- Fin de los datos dinámicos -->
-            </tbody>
-        </table>
+        @if (Model == null || Model.Count == 0)
+        {
+            <p>No se encontraron usuarios con ese nombre.</p>
+        }
+        else
+        {
+            <table class="table table-striped">
+                <thead>
+                    <tr class="titles">
+                        <th>Foto</th>
+                        <th>Nombre</th>
+                        <th>Ubicación</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var usuario in Model)
+                    {
+                        <tr>
+                            <td class="foto"><img width="55" height="55" src="https://elcomercio.pe/resizer/hFKtKd1z4AE95hbFL3qjLjYH66Q=/620x0/smart/filters:format(jpeg):quality(75)/cloudfront-us-east-1.images.arcpublishing.com/elcomercio/7SC7HSDCZZEMVFMZPI34DC5IGM.jpg" alt="image" /></td>
+                            <td class="nombre"><span>@usuario.NombreUsuario</span></td>
+                            <td class="ubicacion"><span>@usuario.Ubicacion</span></td>
+                            <td class="accion"><button>Agregar a amigos</button></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
     </div>
 </body>

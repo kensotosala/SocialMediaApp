@@ -1,7 +1,15 @@
+using Microsoft.EntityFrameworkCore;
+using SocialMediaApp.Persistencia.Data;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+//Contfigurar la conexion string
+builder.Services.AddDbContext<SocialMediaDBContext>(
+    options => options.UseSqlServer(builder.Configuration.GetConnectionString("SocialMediaDB"))
+    );
 
 builder.Services.AddCors(options =>
 {
