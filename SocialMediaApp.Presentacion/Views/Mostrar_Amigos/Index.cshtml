@@ -1,0 +1,75 @@
+﻿@{
+    ViewData["Title"] = "Mostrar Amigos";
+}
+
+<head>
+    <link href="~/css/UserList-styles.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="container mt-4">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody class="table">
+                <!-- Suponiendo que los datos son generados dinámicamente -->
+                <tr>
+                    <td class="nombre"><a href="#">Juan Pérez</a></td>
+                    <td>
+                        <div id=" container-list">
+                            <ul class="nav">
+                                <li>
+                                    <a href="#"><img width="15" height="15" src="https://img.icons8.com/ios-glyphs/30/ellipsis.png" alt="ellipsis" /></a>
+                                    <ul class="sub-nav">
+                                        <li><a href="#"> <img width="20" height="20" src="https://img.icons8.com/ios/50/handshake.png" alt="handshake" /> Enviar Solicitud</a></li>
+                                        <li><a href="#"> <img width="20" height="20" src="https://img.icons8.com/ios-glyphs/30/lock-orientation.png" alt="lock-orientation" /> Bloquear</a></li>
+                                        <li><a href="#"> <img width="20" height="20" src="https://img.icons8.com/fluency-systems-regular/50/delete--v1.png" alt="delete--v1" /> Eliminar</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="nombre"><a href="#">Ana Gómez</a></td>
+                    <td>
+                        <div id=" container-list">
+                            <ul class="nav">
+                                <li>
+                                    <a href="#"><img width="15" height="15" src="https://img.icons8.com/ios-glyphs/30/ellipsis.png" alt="ellipsis" /></a>
+                                    <ul class="sub-nav">
+                                        <li><a href="#"> <img width="20" height="20" src="https://img.icons8.com/ios/50/handshake.png" alt="handshake" /> Enviar Solicitud</a></li>
+                                        <li><a href="#"> <img width="20" height="20" src="https://img.icons8.com/ios-glyphs/30/lock-orientation.png" alt="lock-orientation" /> Bloquear</a></li>
+                                        <li><a href="#"> <img width="20" height="20" src="https://img.icons8.com/fluency-systems-regular/50/delete--v1.png" alt="delete--v1" /> Eliminar</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="nombre"><a href="#">Luis Salazar</a></td>
+                    <td>
+                        <div id=" container-list">
+                            <ul class="nav">
+                                <li>
+                                    <a href="#"><img width="15" height="15" src="https://img.icons8.com/ios-glyphs/30/ellipsis.png" alt="ellipsis" /></a>
+                                    <ul class="sub-nav">
+                                        <li><a href="#"> <img width="20" height="20" src="https://img.icons8.com/ios/50/handshake.png" alt="handshake" /> Enviar Solicitud</a></li>
+                                        <li><a href="#"> <img width="20" height="20" src="https://img.icons8.com/ios-glyphs/30/lock-orientation.png" alt="lock-orientation" /> Bloquear</a></li>
+                                        <li><a href="#"> <img width="20" height="20" src="https://img.icons8.com/fluency-systems-regular/50/delete--v1.png" alt="delete--v1" /> Eliminar</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+                <!-- Fin de los datos dinámicos -->
+            </tbody>
+        </table>
+    </div>
+</body>
+

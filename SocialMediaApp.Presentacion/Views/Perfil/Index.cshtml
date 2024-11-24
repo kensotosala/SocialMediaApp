@@ -1,0 +1,27 @@
+﻿@{
+    ViewData["Title"] = "Perfil";
+}
+<head>
+    <link href="~/css/Perfil_styles.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="profile-container">
+        <div class="profile-header">
+            <img src="https://via.placeholder.com/100" alt="Foto de Perfil" id="user-photo">
+            <h2 id="user-name">Nombre de Usuario</h2>
+            <p id="user-location">Ubicación</p>
+        </div>
+        <div class="profile-body">
+            <h3>Intereses</h3>
+            <ul id="user-interests">
+                <li>Interés 1</li>
+                <li>Interés 2</li>
+                <li>Interés 3</li>
+            </ul>
+        </div>
+    </div>
+    <div class="container-friends">
+        <button id="friends-btn" class="btn-friends">Ver todos los amigos</button>
+    </div>
+    <script src="/js/Perfil.js"></script>
+</body>

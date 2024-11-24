@@ -23,7 +23,7 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Perfil" asp-action="Index">Perfil</a>
                         </li>
                         <li class="nav-item">
                             <div class="dropdown">
@@ -34,6 +34,14 @@
                                     <!-- Notification items will be appended here -->
                                 </ul>
                             </div>
+                        </li>
+                        <li class="nav-item find ms-auto">
+                            <form class="d-flex" role="search">
+                                <input class="form-control me-2" type="search" placeholder="Buscar en Social Media" aria-label="Buscar">
+                                <button id="find-btn" class="btn btn-outline-secondary">
+                                    <img width="30" height="30" src="https://img.icons8.com/ios/50/google-web-search.png" alt="google-web-search" />
+                                </button>
+                            </form>
                         </li>
                     </ul>
                 </div>
@@ -99,5 +107,6 @@
 
         document.addEventListener('DOMContentLoaded', loadNotifications);
     </script>
+    <script src="~/js/Find.js"></script>
 </body>
 </html>

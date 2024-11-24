@@ -1,0 +1,87 @@
+﻿* {
+    padding: 0px;
+    margin: 0px;
+}
+
+table thead tr {
+    text-align: center;
+    background: linear-gradient(95deg, #f7d547, #ffffff);
+}
+
+#container-list {
+    margin: auto;
+    width: 500px;
+}
+
+ul, ol {
+    list-style: none;
+}
+
+.nav {
+    background: transparent;
+    border: none;
+    box-shadow: none
+}
+
+.nav li a {
+    text-decoration: none;
+    padding: 10px 15px;
+    display: block;
+    color: black;
+}
+
+.nav li a:hover {
+    background: linear-gradient(45deg, #f7d547, #ffffff);
+    font-size: 20px;
+    transition: 400ms;
+}
+
+.nav > li {
+    float: left;
+}
+
+.nav li ul {
+    display: none;
+    position: absolute;
+}
+
+.nav li:hover > ul {
+    display: block;
+}
+
+.nombre a {
+    text-decoration: none;
+    color: black;
+    background: #ffffff;
+}
+
+.nombre a:hover {
+    cursor: pointer;
+    font-size: 18px;
+}
+
+.table th, .table td {
+    vertical-align: middle;
+}
+
+.table td {
+    text-align: center
+}
+
+.table td img {
+    border-radius: 50%;
+}
+
+.table td button {
+    background: #808080;
+    color: #ffffff;
+    border-radius: 5px;
+    width: 45%;
+}
+
+.table td button:hover {
+    background: linear-gradient(95deg, #f7d547, #ffffff);
+    color: black;
+    transition: 300ms;
+    font-size: 16px;
+}
