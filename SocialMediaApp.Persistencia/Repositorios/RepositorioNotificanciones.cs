@@ -16,14 +16,14 @@ namespace SocialMediaApp.Persistencia.Repositorios
         // Agrega una nueva notificación
         public async Task AgregarNotificacionAsync(Notificacione notificacione)
         {
-            _context.Notificacione.Add(notificacione);
+            _context.Notificaciones.Add(notificacione);
             await _context.SaveChangesAsync();
         }
 
         // Marca una notificación como leída
         public async Task MarcarNotificacionComoLeidaAsync(int Notificacionid)
         {
-            var notificacion = await _context.Notificacione.FindAsync(Notificacionid);
+            var notificacion = await _context.Notificaciones.FindAsync(Notificacionid);
             if (notificacion != null)
             {
                 notificacion.EsLeida = true;
@@ -34,7 +34,7 @@ namespace SocialMediaApp.Persistencia.Repositorios
         // Obtiene todas las notificaciones de un usuario específico
         public async Task<IEnumerable<Notificacione?>> ObtenerNotificacionesParaUsuarioAsync(int Usuarioid)
         {
-            return await _context.Notificacione
+            return await _context.Notificaciones
                 .Where(n => n.UsuarioId == Usuarioid)
                 .ToListAsync();
         }
@@ -42,10 +42,10 @@ namespace SocialMediaApp.Persistencia.Repositorios
         // Elimina una notificación
         public async Task EliminarNotificacionAsync(int notificacionId)
         {
-            var notificacion = await _context.Notificacione.FindAsync(notificacionId);
+            var notificacion = await _context.Notificaciones.FindAsync(notificacionId);
             if (notificacion != null)
             {
-                _context.Notificacione.Remove(notificacion);
+                _context.Notificaciones.Remove(notificacion);
                 await _context.SaveChangesAsync();
             }
         }
@@ -53,7 +53,7 @@ namespace SocialMediaApp.Persistencia.Repositorios
         // Modifica una notificación existente
         public async Task ModificarNotificacionAsync(Notificacione notificacion)
         {
-            var notificacionExistente = await _context.Notificacione.FindAsync(notificacion.NotificacionId);
+            var notificacionExistente = await _context.Notificaciones.FindAsync(notificacion.NotificacionId);
             if (notificacionExistente != null)
             {
                 // Actualiza las propiedades de la notificación existente
@@ -61,7 +61,7 @@ namespace SocialMediaApp.Persistencia.Repositorios
                 notificacionExistente.Fecha = notificacion.Fecha;
                 notificacionExistente.EsLeida = notificacion.EsLeida;
 
-                _context.Notificacione.Update(notificacionExistente);
+                _context.Notificaciones.Update(notificacionExistente);
                 await _context.SaveChangesAsync();
             }
         }

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace SocialMediaApp.Dominio.ViewModels
 {
@@ -20,11 +14,16 @@ namespace SocialMediaApp.Dominio.ViewModels
         public string Email { get; set; }
 
         [Required(ErrorMessage = "Se quiere una contraseña.")]
-        [StringLength(16, MinimumLength = 8, ErrorMessage = "La contraseña debe contener entre 8 and 16 characters.")]
-        [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*[\!\@\#\$\%\^\&\*\(\)\,\.\?\"":\{\}\|<>])[A-Za-z\d\!\@\#\$\%\^\&\*\(\)\,\.\?\"":\{\}\|<>]+$",
+        [StringLength(128, MinimumLength = 8, ErrorMessage = "La contraseña debe contener entre 8 and 16 characters.")]
+        [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*[\!\@\#\$\%\^\&\*\(\)\,\.\?\"":\{\}\|<>\=\+])[A-Za-z\d\!\@\#\$\%\^\&\*\(\)\,\.\?\"":\{\}\|<>\=\+]+$",
                 ErrorMessage = "La contraseña debe contener al menos una letra mayúscula, una letra minúscula y un carácter especial")]
 
         public string Contraseña { get; set; }
+
+        public string? Nombre {  get; set; }
+        public string? Apellido {get; set; }    
+
+        public string? SalContraseña { get; set; }
         public string? FotoPerfil { get; set; }
         public string? Biografia { get; set; }
         public string? Ubicacion { get; set; }

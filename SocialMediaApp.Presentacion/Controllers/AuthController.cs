@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using SocialMediaApp.Dominio.Entidades;
 using SocialMediaApp.Dominio.ViewModels;
 using SocialMediaApp.Persistencia.Data;
 using System.Security.Claims;
@@ -35,43 +36,48 @@ namespace SocialMediaApp.Presentacion.Controllers
 
         [HttpPost]
         [AllowAnonymous]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(UserLoginViewModel user)
         {
             if (ModelState.IsValid)
             {
-                string url = "http://localhost:5142/api/APIAuth/GetByUsername/" + user.NombreUsuario;
+                string url = "http://localhost:5142/api/APIAuth/Login";
 
-                HttpResponseMessage response = await _httpClient.GetAsync(url);
-
-                Usuario userResult = await response.Content.ReadFromJsonAsync<Usuario>();
-
-                if (userResult == null)
+                var loginRequest = new LoginRequest
                 {
-                    TempData["Mensaje"] = "El nombre de usuario no está registrado.";
-                    TempData["TipoMensaje"] = "alert-danger";
+                    Username = user.NombreUsuario,
+                    Password = user.Contraseña
+                };
+
+                var response = await _httpClient.PostAsJsonAsync(url, loginRequest);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    UsuarioDto userDto = await response.Content.ReadFromJsonAsync<UsuarioDto>();
+
+                    TempData["Mensaje"] = $"Bienvenido {user.NombreUsuario}.";
+                    TempData["TipoMensaje"] = "alert-primary";
+
+                    RegisterClaims(new UsuarioDto
+                    {
+                        NombreUsuario = userDto.NombreUsuario,
+                        Email = userDto.Email
+                    });
+
+                    return RedirectToAction("Index", "Home");
                 }
                 else
                 {
-                    if (userResult.Contraseña == user.Contraseña)
-                    {
-                        TempData["Mensaje"] = $"Bienvenido de nuevo {user.NombreUsuario}.";
-                        TempData["TipoMensaje"] = "alert-primary";
+                    var errorResponse = await response.Content.ReadFromJsonAsync<ApiErrorResponse>();
 
-                        RegisterClaims(userResult);
-
-                        return RedirectToAction("Index", "Home");
-                    }
-                    else
-                    {
-                        TempData["Mensaje"] = "Contraseña incorrecta.";
-                        TempData["TipoMensaje"] = "alert-danger";
-                    }
+                    TempData["Mensaje"] = errorResponse.Message + " " + errorResponse.Details;
+                    TempData["TipoMensaje"] = "alert-danger";
                 }
             }
-            return RedirectToAction("Login", "Auth");
+            return RedirectToAction("Index", "Home");
         }
 
-        private async void RegisterClaims(Usuario user)
+        private async void RegisterClaims(UsuarioDto user)
         {
             var claims = new List<Claim>
             {
@@ -93,82 +99,54 @@ namespace SocialMediaApp.Presentacion.Controllers
 
         [HttpPost]
         [AllowAnonymous]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(UserRegisterViewModel user)
         {
             if (ModelState.IsValid)
-            {
-                bool usernameExists = await UsernameExists(user.NombreUsuario);
+            {                
+                //TODO De vista
+                user.Nombre = "";
+                user.Apellido = "";
 
-                bool emailExists = await EmailExists(user.Email);
+                string url = "http://localhost:5142/api/APIAuth/Register";
 
-                if (!usernameExists && !emailExists)
+                string jsonData = JsonConvert.SerializeObject(user);
+
+                HttpContent content = new StringContent(jsonData, Encoding.UTF8, "application/Json");
+
+                HttpResponseMessage response = await _httpClient.PostAsync(url, content);
+
+                if (response.IsSuccessStatusCode)
                 {
-                    string url = "http://localhost:5142/api/APIAuth/Register";
+                    var result = response.Content.ReadFromJsonAsync<List<int>>();
 
-                    string jsonData = JsonConvert.SerializeObject(user);
+                    TempData["Mensaje"] = $"Bienvenido {user.NombreUsuario}.";
+                    TempData["TipoMensaje"] = "alert-primary";
 
-                    HttpContent content = new StringContent(jsonData, Encoding.UTF8, "application/Json");
-
-                    HttpResponseMessage response = await _httpClient.PostAsync(url, content);
-
-                    if (response.IsSuccessStatusCode)
+                    RegisterClaims(new UsuarioDto
                     {
-                        TempData["Mensaje"] = $"Bienvenido {user.NombreUsuario}.";
-                        TempData["TipoMensaje"] = "alert-primary";
+                        NombreUsuario = user.NombreUsuario,
+                        Email = user.Email
+                    });
 
-                        RegisterClaims(new Usuario
-                        {
-                            NombreUsuario = user.NombreUsuario,
-                            Email = user.Email,
-                            Contraseña = user.Contraseña,
-                            FechaRegistro = DateTime.Now
-                        });
-
-                        return RedirectToAction("Index", "Home");
-                    }
-                    else
-                    {
-                        TempData["Mensaje"] = "No se pudo crear la cuenta.";
-                        TempData["TipoMensaje"] = "alert-danger";
-                    }
+                    return RedirectToAction("Index", "Home");
                 }
                 else
                 {
-                    if (usernameExists && emailExists)
-                        TempData["Mensaje"] = "El nombre de usuario y correo electrónico ya existen.";
-                    else if (usernameExists)
-                        TempData["Mensaje"] = "El nombre de usuario está en uso.";
-                    else if (emailExists)
-                        TempData["Mensaje"] = "El correo electrónico ya está registrado.";
+                    var errorResponse = await response.Content.ReadFromJsonAsync<ApiErrorResponse>();
 
+                    TempData["Mensaje"] = errorResponse.Message + " " + errorResponse.Details;
                     TempData["TipoMensaje"] = "alert-danger";
-                }            
+                }        
             }
             return RedirectToAction("Register", "Auth");
         }
 
-        [HttpGet]
-        private async Task<bool> UsernameExists(string username)
+        public async Task<IActionResult> Logout(string username, string password)
         {
-            string url = "http://localhost:5142/api/APIAuth/GetByUsername/" + username;
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
-            HttpResponseMessage response = await _httpClient.GetAsync(url);
-
-            Usuario userResult = await response.Content.ReadFromJsonAsync<Usuario>();
-
-            return (userResult != null);
-        }
-
-        [HttpGet]
-        private async Task<bool> EmailExists(string email)
-        {
-            string url = "http://localhost:5142/api/APIAuth/GetByEmail/" + email;
-
-            HttpResponseMessage response = await _httpClient.GetAsync(url);
-
-            Usuario userResult = await response.Content.ReadFromJsonAsync<Usuario>();
-
-            return (userResult != null);
+            return RedirectToAction("Index", "Home");
         }
     }
 }

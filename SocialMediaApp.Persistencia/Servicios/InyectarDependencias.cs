@@ -16,7 +16,7 @@ namespace SocialMediaApp.Persistencia.Servicios
             servicios.AddScoped<IEvento,RepositorioEvento>();
             servicios.AddScoped<INotificaciones, RepositorioNotificaciones>();
             servicios.AddScoped<IAuth, AuthRepository>();
-            
+            servicios.AddScoped<IAuthService, AuthService>();
         }
 
     }

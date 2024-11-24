@@ -3,8 +3,6 @@ using Newtonsoft.Json;
 using SocialMediaApp.Dominio.Interfaces;
 using SocialMediaApp.Persistencia.Data;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-
 namespace SocialMediaApp.API.Controllers
 {
     [Route("api/[controller]")]
@@ -12,85 +10,108 @@ namespace SocialMediaApp.API.Controllers
     public class APIAuthController : ControllerBase
     {
         private readonly IAuth _authRep;
+        private readonly IAuthService _authService;
 
-        public APIAuthController(IAuth authRep)
+        public APIAuthController(IAuth authRep, IAuthService authService)
         {
             _authRep = authRep;
-        }
-
-        // GET: api/<APIAuthController>
-        [HttpGet]
-        [Route("GetByUsername/{username}")]
-        public async Task<ActionResult> GetByUsername(string username)
-        {
-            var response = await _authRep.getByUsername(username);
-            
-            Usuario user = null;
-
-            if (response != null)
-            {
-                user = new Usuario()
-                {
-                    NombreUsuario = response.NombreUsuario,
-                    Email = response.Email,
-                    Contraseña = response.Contraseña
-                };
-            }
-
-            var jsonResponse = JsonConvert.SerializeObject(user);
-
-            return Content(jsonResponse, "application/json");
-        }
-
-        // GET: api/<APIAuthController>
-        [HttpGet]
-        [Route("GetByEmail/{email}")]
-        public async Task<ActionResult> GetByEmail(string email)
-        {
-            var response = await _authRep.getByEmail(email);
-
-            Usuario user = null;
-
-            if (response != null)
-            {
-                user = new Usuario()
-                {
-                    NombreUsuario = response.NombreUsuario,
-                    Email = response.Email,
-                    Contraseña = response.Contraseña
-                };
-            }
-
-            var jsonResponse = JsonConvert.SerializeObject(user);
-
-            return Content(jsonResponse, "application/json");
-        }
-
-        // GET api/<APIAuthController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
-        {
-            return "value";
+            _authService = authService;
         }
 
         // POST api/<APIAuthController>
         [HttpPost]
         [Route("Register")]
-        public async Task<ActionResult> Register(int id, [FromBody] Usuario user)
+        public async Task<ActionResult> Register([FromBody] Usuario user)
         {
-            return Ok(new { resultado = await _authRep.Register(user) });
+            user.Contraseña = _authService.CreateHashPassword(user.Contraseña, out string salt);
+
+            user.SalContraseña = salt;
+            
+            user.Nombre = "Probando";
+            user.Apellido = "Probando";
+
+
+            if(await _authRep.getByEmail(user.Email) != null && await _authRep.getByUsername(user.NombreUsuario) != null)
+            {
+                return BadRequest(new
+                {
+                    Status = 400,
+                    Message = "No se pudo crear la cuenta.",
+                    Details = "El nombre de usuario y correo electrónico ya existen."
+                });
+            }
+            else if (await _authRep.getByEmail(user.Email) != null){
+
+                return BadRequest(new
+                {
+                    Status = 400,
+                    Message = "No se pudo crear la cuenta.",                    
+                    Details = "El correo electrónico ya está registrado."
+                });
+            }
+            else if (await _authRep.getByUsername(user.NombreUsuario) != null){
+
+                return BadRequest(new
+                {
+                    Status = 400,                    
+                    Message = "No se pudo crear la cuenta.",
+                    Details = "El nombre de usuario está en uso."
+                });
+            }
+            else
+            {
+                return Ok(new { result = await _authRep.Register(user) });
+
+            }
         }
 
-        // PUT api/<APIAuthController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        [HttpPost]
+        [Route("Login")]
+        public async Task<ActionResult> Login([FromBody] LoginRequest loginrequest)
         {
+            Usuario user = await _authRep.getByUsername(loginrequest.Username);
+            
+            if (user == null)
+            {
+                return BadRequest(new
+                {
+                    Status = 400,
+                    Message = "Inicio de sesión fallido.",
+                    Details = "El nombre de usuario no está registrado."
+                });
+            }
+            else
+            {
+                if(_authService.VerifyPassword(loginrequest.Password, user.Contraseña, user.SalContraseña))
+                {
+                    UsuarioDto userDto = new UsuarioDto()
+                    {
+                        NombreUsuario = user.NombreUsuario,
+                        Email = user.Email,
+                        Nombre = user.Nombre,
+                        Apellido = user.Apellido,
+                        FotoPerfil = user.FotoPerfil,
+                        Biografia = user.Biografia,
+                        Ubicacion = user.Ubicacion,
+                        Intereses = user.Intereses,
+                        EsPremium = user.EsPremium
+                    };
+
+                    var jsonResponse = JsonConvert.SerializeObject(user);
+
+                    return Content(jsonResponse, "application/json");
+                }
+                else
+                {
+                    return BadRequest(new
+                    {
+                        Status = 400,
+                        Message = "Contraseña incorrecta.",
+                    });
+                }
+            }
+
         }
 
-        // DELETE api/<APIAuthController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-        }
     }
 }

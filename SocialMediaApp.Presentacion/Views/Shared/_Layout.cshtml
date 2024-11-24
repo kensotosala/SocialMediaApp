@@ -33,9 +33,15 @@
                     <ul class="navbar-nav ms-auto">
                         @if (User.Identity.IsAuthenticated)
                         {
-                            <li class="nav-item ms-auto">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Auth" asp-action="Profile">@User.FindFirst(ClaimTypes.NameIdentifier)?.Value</a>
-                            </li>
+                            <div class="dropdown">
+                                <button class="btn btn-secondary dropdown-toggle ms-auto" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    @User.FindFirst(ClaimTypes.NameIdentifier)?.Value
+                                </button>
+                                <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
+                                    <a class="dropdown-item" asp-area="" asp-controller="Auth" asp-action="Profile">Opciones de Perfil</a>
+                                    <a class="dropdown-item" asp-area="" asp-controller="Auth" asp-action="Logout">Cerrar Sesión</a>
+                                </div>
+                            </div>
                         }
                         else
                         {

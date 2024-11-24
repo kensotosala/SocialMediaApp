@@ -1,19 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
-
-namespace SocialMediaApp.Persistencia.Data;
+﻿namespace SocialMediaApp.Persistencia.Data;
 
 public partial class Usuario
 {
     public int UsuarioId { get; set; }
 
-    public string NombreUsuario { get; set; }
+    public string NombreUsuario { get; set; } = null!;
 
-    public string Email { get; set; }
+    public string Email { get; set; } = null!;
 
-    public string Contraseña { get; set; }
+    public string Contraseña { get; set; } = null!;
+
+    public string? SalContraseña { get; set; }
+
+    public string? Nombre { get; set; } = null!;
+
+    public string? Apellido { get; set; } = null!;
 
     public string? FotoPerfil { get; set; }
 
@@ -43,7 +44,7 @@ public partial class Usuario
 
     public virtual ICollection<Mensaje> MensajeReceptors { get; set; } = new List<Mensaje>();
 
-    public virtual ICollection<Notificacione> Notificacione { get; set; } = new List<Notificacione>();
+    public virtual ICollection<Notificacione> Notificaciones { get; set; } = new List<Notificacione>();
 
     public virtual ICollection<Pago> Pagos { get; set; } = new List<Pago>();
 

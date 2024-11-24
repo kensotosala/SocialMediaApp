@@ -1,11 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SocialMediaApp.Dominio.Interfaces;
 using SocialMediaApp.Persistencia.Data;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SocialMediaApp.Persistencia.Repositorios
 {
@@ -19,9 +14,10 @@ namespace SocialMediaApp.Persistencia.Repositorios
         }
 
         public async Task<int> Register(Usuario user)
-        {
+        {   
             _context.Add(user);
             var res = _context.SaveChangesAsync();
+            
             return await res;
         }
 
