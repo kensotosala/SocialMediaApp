@@ -25,6 +25,8 @@ public partial class Usuario
 
     public DateTime? FechaRegistro { get; set; }
 
+    public virtual ICollection<Usuario> BuscarUsuarios { get; set; } = new List<Usuario>();
+
     public virtual ICollection<Amistade> AmistadeAmigos { get; set; } = new List<Amistade>();
 
     public virtual ICollection<Amistade> AmistadeUsuarios { get; set; } = new List<Amistade>();

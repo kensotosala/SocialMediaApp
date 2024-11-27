@@ -271,7 +271,7 @@ public partial class SocialMediaDBContext : DbContext
                 .HasConstraintName("FK__Recuperac__Usuar__571DF1D5");
         });
 
-        modelBuilder.Entity<Usuario>(entity =>
+       /* modelBuilder.Entity<Usuario>(entity =>
         {
             entity.HasKey(e => e.UsuarioId).HasName("PK__Usuarios__2B3DE79858DC9012");
 
@@ -290,7 +290,13 @@ public partial class SocialMediaDBContext : DbContext
             entity.Property(e => e.Intereses).HasMaxLength(255);
             entity.Property(e => e.NombreUsuario).HasMaxLength(50);
             entity.Property(e => e.Ubicacion).HasMaxLength(100);
-        });
+        });*/
+     modelBuilder.Entity<Usuario>()
+    .HasMany(u => u.BuscarUsuarios)
+    .WithOne() // Si no hay una propiedad de navegación inversa.
+    .HasForeignKey("UsuarioID") // Configura una clave foránea explícita.
+    .OnDelete(DeleteBehavior.NoAction); // Ajusta el comportamiento de eliminación si es necesario.
+
 
         OnModelCreatingPartial(modelBuilder);
     }
