@@ -1,7 +1,14 @@
 using Microsoft.EntityFrameworkCore;
 using SocialMediaApp.Persistencia.Data;
+using SocialMediaApp.Persistencia.Servicios;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Llamar al método que inyecta nuestras dependencias
+InyectarDependencias.ConfiguracionServicios(builder.Services);
+
+// Add services permite consumir el API.
+builder.Services.AddHttpClient();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();

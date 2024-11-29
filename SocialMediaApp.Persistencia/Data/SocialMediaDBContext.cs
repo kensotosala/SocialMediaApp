@@ -43,7 +43,7 @@ public partial class SocialMediaDBContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Server=DESKTOP-7NDUH9S\\SQLEXPRESS;Database=SocialMediaDB;Trusted_Connection=True;Encrypt=False;");
+        => optionsBuilder.UseSqlServer("Server=DESKTOP-M7T1FTN\\SQLEXPRESS01;Database=SocialMediaDB;Trusted_Connection=True;Encrypt=False;TrustServerCertificate=True;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -271,7 +271,13 @@ public partial class SocialMediaDBContext : DbContext
                 .HasConstraintName("FK__Recuperac__Usuar__571DF1D5");
         });
 
-        modelBuilder.Entity<Usuario>(entity =>
+         modelBuilder.Entity<Usuario>()
+            .HasMany(u => u.BuscarUsuarios)
+            .WithOne() // Si no hay una propiedad de navegación inversa.
+            .HasForeignKey("UsuarioID") // Configura una clave foránea explícita.
+            .OnDelete(DeleteBehavior.NoAction); // Ajusta el comportamiento de eliminación si es necesario.
+
+        /*modelBuilder.Entity<Usuario>(entity =>
         {
             entity.HasKey(e => e.UsuarioId).HasName("PK__Usuarios__2B3DE79858DC9012");
 
@@ -290,7 +296,10 @@ public partial class SocialMediaDBContext : DbContext
             entity.Property(e => e.Intereses).HasMaxLength(255);
             entity.Property(e => e.NombreUsuario).HasMaxLength(50);
             entity.Property(e => e.Ubicacion).HasMaxLength(100);
-        });
+        });*/
+
+        
+
 
         OnModelCreatingPartial(modelBuilder);
     }

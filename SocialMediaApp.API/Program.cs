@@ -1,7 +1,6 @@
-using SocialMediaApp.Persistencia.Servicios;
-using SocialMediaApp.Persistencia.Data;
 using Microsoft.EntityFrameworkCore;
-using System.Text.Json.Serialization;
+using SocialMediaApp.Persistencia.Data;
+using SocialMediaApp.Persistencia.Servicios;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,19 +11,20 @@ builder.Services.AddControllers()
         options.JsonSerializerOptions.ReferenceHandler =
             System.Text.Json.Serialization.ReferenceHandler.Preserve;
     });
-//llamar al metodo que inyecta nuestras dependencias
+
+// Llamar al método que inyecta nuestras dependencias
 InyectarDependencias.ConfiguracionServicios(builder.Services);
 
-//Configurar la conexion string
+// Configurar la conexión a la base de datos (string)
 builder.Services.AddDbContext<SocialMediaDBContext>(
     options => options.UseSqlServer(builder.Configuration.GetConnectionString("SocialMediaApp"))
-    );
+);
 
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+// Configuración de Swagger/OpenAPI
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// Configurar CORS
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>

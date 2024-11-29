@@ -1,4 +1,9 @@
-﻿@{
+﻿@using SocialMediaApp.Dominio.DTO
+@using SocialMediaApp.Persistencia.Data
+
+@model List<SocialMediaApp.Dominio.DTO.UsuarioDTO>
+
+@{
     ViewData["Title"] = "Buscar Usuarios";
 }
 
@@ -8,6 +13,8 @@
 <body>
     <div class="container mt-4">
         <h2>Resultados de la Búsqueda</h2>
+
+        <p>Total de resultados: @Model.Count</p>
 
         @if (Model == null || Model.Count == 0)
         {
@@ -28,10 +35,10 @@
                     @foreach (var usuario in Model)
                     {
                         <tr>
-                            <td class="foto"><img width="55" height="55" src="https://elcomercio.pe/resizer/hFKtKd1z4AE95hbFL3qjLjYH66Q=/620x0/smart/filters:format(jpeg):quality(75)/cloudfront-us-east-1.images.arcpublishing.com/elcomercio/7SC7HSDCZZEMVFMZPI34DC5IGM.jpg" alt="image" /></td>
-                            <td class="nombre"><span>@usuario.NombreUsuario</span></td>
-                            <td class="ubicacion"><span>@usuario.Ubicacion</span></td>
-                            <td class="accion"><button>Agregar a amigos</button></td>
+                            <td><img width="55" height="55" src="@usuario.FotoPerfil" alt="image" /></td>
+                            <td>@usuario.NombreUsuario</td>
+                            <td>@usuario.Ubicacion</td>
+                            <td><button>Agregar a amigos</button></td>
                         </tr>
                     }
                 </tbody>
