@@ -7,7 +7,7 @@ namespace SocialMediaApp.Dominio.Interfaces
         public Task<List<Usuario>> ObtenerListaUsuariosAsync();
 
         public Task<Usuario?> ObtenerUsuarioXNombreAsync(string NombreUsuario);
-        //public Task<IEnumerable<Usuario?>> ObtenerUsuariosAsync();
+        
 
     }
 }
