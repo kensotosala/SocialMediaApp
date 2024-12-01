@@ -28,7 +28,7 @@
                         <li class="nav-item">
                             <div class="dropdown">
                                 <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                                    Notificaciones <span class="badge bg-danger" id="notificationCount">3</span>
+                                    Notificaciones <span class="badge bg-danger" id="notificationCount">0</span>
                                 </button>
                                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1" id="notificationDropdown">
                                     <!-- Notification items will be appended here -->
@@ -67,25 +67,33 @@
                 const response = await fetch(NOTIFICATIONS_API, { method: 'GET' });
                 if (!response.ok) throw new Error("Failed to fetch notifications");
 
-                const notifications = await response.json();
+                const data = await response.json();
+                const notifications = data || [];
 
                 dropdownMenu.innerHTML = "";
                 let unreadCount = 0;
 
+                if (!Array.isArray(notifications)) {
+                    console.error('Notifications are not in array format.');
+                    return;
+                }
+
                 notifications.forEach(notification => {
-                    const { id, mensaje, link, leido } = notification;
-                    const itemClass = leido ? "" : "fw-bold text-primary";
-                    if (!leido) unreadCount++;
+                    const { Descripcion, Fecha, EsLeida } = notification;
+                    const itemClass = EsLeida ? "" : "fw-bold text-primary";
+                    if (!EsLeida) unreadCount++;
 
                     const li = document.createElement('li');
                     li.innerHTML = `
-                                    <a class="dropdown-item ${itemClass}" href="${link || '#'}">
-                                        ${mensaje}
-                                    </a>`;
+                                <a class="dropdown-item ${itemClass}" href="#">
+                                    <small class="text-muted">${Descripcion || 'No description'}</small>
+                                    <br><small>${new Date(Fecha).toLocaleString()}</small>
+                                </a>`;
                     dropdownMenu.appendChild(li);
                 });
 
                 notificationCount.textContent = unreadCount > 0 ? unreadCount : "";
+
                 if (notifications.length === 0) {
                     const emptyItem = document.createElement('li');
                     emptyItem.innerHTML = '<span class="dropdown-item text-muted">No new notifications</span>';
@@ -99,5 +107,6 @@
 
         document.addEventListener('DOMContentLoaded', loadNotifications);
     </script>
+
 </body>
 </html>

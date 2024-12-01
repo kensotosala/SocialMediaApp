@@ -9,6 +9,7 @@ namespace SocialMediaApp.API.Controllers
     public class EventoControllerAPI : Controller
     {
         private readonly IEvento _repEvento;
+
         public EventoControllerAPI(IEvento repEvento)
         {
             _repEvento = repEvento;
@@ -18,7 +19,6 @@ namespace SocialMediaApp.API.Controllers
         [HttpGet("obtnerTodosLosEventos")]
         public async Task<IActionResult> ObtenerMisEventos()
         {
-            
             var eventos = await _repEvento.ObtenerEventoAsync();
             return Ok(eventos);
         }
@@ -63,6 +63,7 @@ namespace SocialMediaApp.API.Controllers
             await _repEvento.EliminarEventoAsync(eventoId);
             return NoContent();
         }
+
         [HttpPost("invitar al usuario")]
         public async Task<IActionResult> InvitarUsuario(int eventoId, int usuarioId)
         {

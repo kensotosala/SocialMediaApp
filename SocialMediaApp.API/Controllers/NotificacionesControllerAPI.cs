@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using SocialMediaApp.Dominio.DTO;
 using SocialMediaApp.Dominio.Interfaces;
 using SocialMediaApp.Persistencia.Data;
 
@@ -27,7 +29,20 @@ namespace SocialMediaApp.API.Controllers
         [HttpGet("ObtenerNotificaciones")]
         public async Task<ActionResult> ObtenerNotificaciones()
         {
-            return Ok(new { resultado = await _repNotificaciones.obtenerTodo() });
+            var resultado = await _repNotificaciones.obtenerTodo();
+
+            var notificacionDTO = resultado.Select(n => new NotificacionDTO
+            {
+                NotificacionId = n.NotificacionId,
+                UsuarioId = n.UsuarioId,
+                Tipo = n.Tipo,
+                Descripcion = n.Descripcion,
+                Fecha = n.Fecha,
+                EsLeida = n.EsLeida,
+            }).ToList();
+
+            var jsonRes = JsonConvert.SerializeObject(notificacionDTO);
+            return Content(jsonRes, "application/json");
         }
 
         // Crear una notificación
