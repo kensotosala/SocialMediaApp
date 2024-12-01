@@ -6,10 +6,12 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
-        policy.WithOrigins("http://localhost:5048") 
+        policy.WithOrigins("http://localhost:5048")
               .AllowAnyHeader()
               .AllowAnyMethod());
 });
+
+builder.Configuration.AddJsonFile(@"C:\SocialMediaApp\SocialMediaApp.Persistencia\ConnectionStrings.json", optional: false, reloadOnChange: true);
 
 var app = builder.Build();
 
@@ -32,7 +34,4 @@ app.MapControllerRoute(
 
 app.Run();
 
-
 // This is a test
-
-

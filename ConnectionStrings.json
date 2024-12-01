@@ -1,0 +1,5 @@
+{
+  "ConnectionStrings": {
+    "DefaultConnection": "Server=KENDALL-PC\\SQLEXPRESS;Database=SocialMediaDB;Trusted_Connection=True;Encrypt=False;"
+  }
+}

@@ -1,18 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace SocialMediaApp.Persistencia.Data;
 
 public partial class SocialMediaDBContext : DbContext
 {
-    public SocialMediaDBContext()
-    {
-    }
 
-    public SocialMediaDBContext(DbContextOptions<SocialMediaDBContext> options)
+    private readonly IConfiguration _configuration;
+
+    public SocialMediaDBContext(DbContextOptions<SocialMediaDBContext> options, IConfiguration configuration)
         : base(options)
     {
+        _configuration = configuration;
     }
 
     public virtual DbSet<Amistade> Amistades { get; set; }
@@ -42,7 +43,14 @@ public partial class SocialMediaDBContext : DbContext
     public virtual DbSet<Usuario> Usuarios { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseSqlServer("Server=KENDALL-PC\\SQLEXPRESS;Database=SocialMediaDB;Trusted_Connection=True;Encrypt=False;");
+    {
+        if (!optionsBuilder.IsConfigured)
+        {
+            var connectionString = _configuration.GetConnectionString("DefaultConnection");
+
+            optionsBuilder.UseSqlServer(connectionString);
+        }
+    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
