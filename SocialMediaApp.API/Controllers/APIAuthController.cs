@@ -27,10 +27,6 @@ namespace SocialMediaApp.API.Controllers
             user.Contraseña = _authService.CreateHashPassword(user.Contraseña, out string salt);
 
             user.SalContraseña = salt;
-            
-            user.Nombre = "Probando";
-            user.Apellido = "Probando";
-
 
             if(await _authRep.getByEmail(user.Email) != null && await _authRep.getByUsername(user.NombreUsuario) != null)
             {

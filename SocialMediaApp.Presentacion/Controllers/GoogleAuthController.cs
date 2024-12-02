@@ -7,8 +7,6 @@ using System.Security.Claims;
 using Newtonsoft.Json;
 using System.Text;
 using SocialMediaApp.Dominio.ViewModels;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace SocialMediaApp.Presentacion.Controllers
 {
@@ -42,28 +40,42 @@ namespace SocialMediaApp.Presentacion.Controllers
                 Email = result.Principal.FindFirstValue(ClaimTypes.Email)
             };
 
-            if (await EmailExists(user.Email))
+            var userDb = await EmailExists(user.Email);
+
+            if (userDb == null)
             {
-                TempData["Mensaje"] = $"Bienvenido {user.Nombre}.";
-                TempData["TipoMensaje"] = "alert-primary";
-
-                await RegisterClaims(new UsuarioDto
-                {
-                    NombreUsuario = user.NombreUsuario,
-                    Nombre = user.Nombre,
-                    Email = user.Email
-                });
-
-                return RedirectToAction("Index", "Home");
+                return await RegisterGoogle(user);
             }
             else
             {
-                return await RegisterGoogle(user);
+                if (await GoogleAccountExists(user.NombreUsuario, userDb.NombreUsuario))
+                {
+                    TempData["Mensaje"] = $"Bienvenido {user.Nombre}.";
+                    TempData["TipoMensaje"] = "alert-primary";
+
+                    await RegisterClaims(new UsuarioDto
+                    {
+                        NombreUsuario = user.NombreUsuario,
+                        Nombre = user.Nombre,
+                        Email = user.Email
+                    });
+
+                    return RedirectToAction("Index", "Home");
+                }
+                else
+                {
+                    await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+
+                    TempData["Mensaje"] = "Este correo electrónico está en uso.";
+                    TempData["TipoMensaje"] = "alert-danger";
+
+                    return RedirectToAction("Login", "Auth");
+                }
             }            
         }
 
         [HttpGet]
-        private async Task<bool> EmailExists(string email)
+        private async Task<Usuario> EmailExists(string email)
         {
             string url = "http://localhost:5142/api/APIAuth/GetByEmail/" + email;
 
@@ -71,9 +83,15 @@ namespace SocialMediaApp.Presentacion.Controllers
 
             Usuario userResult = await response.Content.ReadFromJsonAsync<Usuario>();
 
-            bool result = (userResult != null);
-            return result;
+            return userResult;
         }
+
+        // Google user exists
+        private async Task<bool> GoogleAccountExists(string usernameResponse, string usernameInput)
+        {
+            return (usernameInput.Equals(usernameResponse));
+        }
+
 
         public async Task<IActionResult> RegisterGoogle(UserLoginGoogleViewModel user)
         {

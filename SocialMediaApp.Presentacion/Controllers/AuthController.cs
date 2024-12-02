@@ -104,10 +104,6 @@ namespace SocialMediaApp.Presentacion.Controllers
         {
             if (ModelState.IsValid)
             {                
-                //TODO De vista
-                user.Nombre = "";
-                user.Apellido = "";
-
                 string url = "http://localhost:5142/api/APIAuth/Register";
 
                 string jsonData = JsonConvert.SerializeObject(user);
@@ -118,15 +114,14 @@ namespace SocialMediaApp.Presentacion.Controllers
 
                 if (response.IsSuccessStatusCode)
                 {
-                    //var result = response.Content.ReadFromJsonAsync<List<int>>();
-
-                    TempData["Mensaje"] = $"Bienvenido {user.NombreUsuario}.";
+                    TempData["Mensaje"] = $"Bienvenido {user.Nombre}.";
                     TempData["TipoMensaje"] = "alert-primary";
 
                     await RegisterClaims(new UsuarioDto
                     {
                         NombreUsuario = user.NombreUsuario,
                         Nombre = user.Nombre,
+                        Apellido = user.Apellido,
                         Email = user.Email
                     });
 
