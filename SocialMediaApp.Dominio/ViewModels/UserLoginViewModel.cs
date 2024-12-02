@@ -13,6 +13,6 @@ namespace SocialMediaApp.Dominio.ViewModels
         public string NombreUsuario { get; set; }
 
         [Required(ErrorMessage = "Se quiere una contraseña.")]
-        public string Contraseña { get; set; }
+        public string? Contraseña { get; set; }
     }
 }

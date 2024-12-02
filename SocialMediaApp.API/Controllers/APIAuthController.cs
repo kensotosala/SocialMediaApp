@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using SocialMediaApp.Dominio.Interfaces;
 using SocialMediaApp.Persistencia.Data;
@@ -63,6 +64,36 @@ namespace SocialMediaApp.API.Controllers
                 return Ok(new { result = await _authRep.Register(user) });
 
             }
+        }
+
+        [HttpPost]
+        [Route("RegisterGoogle")]
+        public async Task<ActionResult> RegisterGoogle([FromBody] Usuario user)
+        {
+            return Ok(new { result = await _authRep.Register(user) });
+        }
+
+        [HttpGet]
+        [Route("GetByEmail/{email}")]
+        public async Task<ActionResult> GetByEmail(string email)
+        {
+            var response = await _authRep.getByEmail(email);
+
+            Usuario user = null;
+
+            if (response != null)
+            {
+                user = new Usuario()
+                {
+                    NombreUsuario = response.NombreUsuario,
+                    Email = response.Email,
+                    Contraseña = response.Contraseña
+                };
+            }
+
+            var jsonResponse = JsonConvert.SerializeObject(user);
+
+            return Content(jsonResponse, "application/json");
         }
 
         [HttpPost]

@@ -31,6 +31,10 @@
     <button type="submit" class="btn btn-primary">Iniciar Sesión</button>
 </form>
 
+<div class="col-5 text-end">
+    <a asp-controller="GoogleAuth" asp-action="LoginGoogle" class="btn btn-primary form-control">Iniciar Sesión con Google</a>
+</div>
+
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");

@@ -55,12 +55,12 @@ namespace SocialMediaApp.Presentacion.Controllers
                 {
                     UsuarioDto userDto = await response.Content.ReadFromJsonAsync<UsuarioDto>();
 
-                    TempData["Mensaje"] = $"Bienvenido {user.NombreUsuario}.";
+                    TempData["Mensaje"] = $"Bienvenido {userDto.Nombre}.";
                     TempData["TipoMensaje"] = "alert-primary";
 
-                    RegisterClaims(new UsuarioDto
+                    await RegisterClaims(new UsuarioDto
                     {
-                        NombreUsuario = userDto.NombreUsuario,
+                        Nombre = userDto.Nombre,
                         Email = userDto.Email
                     });
 
@@ -77,11 +77,11 @@ namespace SocialMediaApp.Presentacion.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-        private async void RegisterClaims(UsuarioDto user)
+        private async Task RegisterClaims(UsuarioDto user)
         {
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.NameIdentifier, user.NombreUsuario)
+                new Claim(ClaimTypes.NameIdentifier, user.Nombre)
             };
 
             var claimIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
@@ -118,14 +118,15 @@ namespace SocialMediaApp.Presentacion.Controllers
 
                 if (response.IsSuccessStatusCode)
                 {
-                    var result = response.Content.ReadFromJsonAsync<List<int>>();
+                    //var result = response.Content.ReadFromJsonAsync<List<int>>();
 
                     TempData["Mensaje"] = $"Bienvenido {user.NombreUsuario}.";
                     TempData["TipoMensaje"] = "alert-primary";
 
-                    RegisterClaims(new UsuarioDto
+                    await RegisterClaims(new UsuarioDto
                     {
                         NombreUsuario = user.NombreUsuario,
+                        Nombre = user.Nombre,
                         Email = user.Email
                     });
 

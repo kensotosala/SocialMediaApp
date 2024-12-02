@@ -8,7 +8,7 @@ public partial class Usuario
 
     public string Email { get; set; } = null!;
 
-    public string Contraseña { get; set; } = null!;
+    public string? Contraseña { get; set; }
 
     public string? SalContraseña { get; set; }
 
