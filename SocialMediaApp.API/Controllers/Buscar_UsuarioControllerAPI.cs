@@ -2,7 +2,6 @@
 using SocialMediaApp.Dominio.DTO;
 using SocialMediaApp.Dominio.Interfaces;
 using Newtonsoft.Json;
-using SocialMediaApp.Persistencia.Data;
 
 namespace SocialMediaApp.API.Controllers
 {
