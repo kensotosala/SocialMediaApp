@@ -36,9 +36,9 @@
                             </div>
                         </li>
                         <li class="nav-item find ms-auto">
-                            <form class="d-flex" role="search">
-                                <input class="form-control me-2" type="search" placeholder="Buscar en Social Media" aria-label="Buscar">
-                                <button id="find-btn" class="btn btn-outline-secondary">
+                            <form class="d-flex" role="search" method="get" asp-controller="Buscar_Usuarios" asp-action="Index">
+                                <input class="form-control me-2" type="search" name="nombre" placeholder="Buscar Usuarios" aria-label="Buscar" />
+                                <button id="find-btn" class="btn btn-outline-secondary" type="submit">
                                     <img width="30" height="30" src="https://img.icons8.com/ios/50/google-web-search.png" alt="google-web-search" />
                                 </button>
                             </form>
@@ -53,7 +53,7 @@
             @RenderBody()
         </main>
     </div>
-
+    
     <footer class="border-top footer text-muted">
         <div class="container">
             &copy; 2024 - SocialMediaApp.Presentacion - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>

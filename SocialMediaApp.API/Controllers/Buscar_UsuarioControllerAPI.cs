@@ -2,7 +2,10 @@
 using SocialMediaApp.Dominio.DTO;
 using SocialMediaApp.Dominio.Interfaces;
 using Newtonsoft.Json;
+<<<<<<< HEAD
 using SocialMediaApp.Persistencia.Data;
+=======
+>>>>>>> pr/1
 
 namespace SocialMediaApp.API.Controllers
 {
@@ -47,7 +50,10 @@ namespace SocialMediaApp.API.Controllers
         [Route("BuscarUsuariosPorNombre")]
         public async Task<ActionResult> BuscarUsuariosPorNombreAsync(string nombre)
         {
+<<<<<<< HEAD
             // Filtrar los usuarios en el repositorio
+=======
+>>>>>>> pr/1
             var usuarios = await _repBuscar_Usuario.ObtenerListaUsuariosAsync();
             var usuariosFiltrados = usuarios
                 .Where(u => u.NombreUsuario.Contains(nombre, StringComparison.OrdinalIgnoreCase))
@@ -66,9 +72,14 @@ namespace SocialMediaApp.API.Controllers
                 })
                 .ToList();
 
+<<<<<<< HEAD
             // Convertir a JSON y devolver la respuesta
             var jsonRes = JsonConvert.SerializeObject(usuariosFiltrados);
             return Content(jsonRes, "application/json");
+=======
+            // Devuelve los usuarios filtrados directamente como un resultado JSON
+            return Ok(usuariosFiltrados);
+>>>>>>> pr/1
         }
     }
 }
