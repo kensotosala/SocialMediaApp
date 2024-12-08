@@ -73,15 +73,41 @@
         </div>
     </div>
 
+    <!-- Modal -->
+    <div class="modal fade" id="notificationModal" tabindex="-1" aria-labelledby="notificationModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="notificationModalLabel">Notificación</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="location.reload();"></button>
+                </div>
+                <div class="modal-body">
+                    <p id="notificationDescription"></p>
+                    <p id="notificationDate" class="text-muted"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button"
+                            class="btn btn-secondary"
+                            data-bs-dismiss="modal"
+                            onclick="location.reload();">
+                        Close
+                    </button>
+                    <button type="button" class="btn btn-primary" id="markAsReadButton" onclick="setTimeout(function() { location.reload(); }, 1000);">Marcar como leída</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
     <footer class="border-top footer text-muted">
         <div class="container">
             &copy; 2024 - SocialMediaApp.Presentacion - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
-    <script src="~/js/FetchNotificaciones.js"></script>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/FetchNotificaciones.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
 
 </body>

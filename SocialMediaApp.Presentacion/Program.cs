@@ -11,8 +11,6 @@ builder.Services.AddCors(options =>
               .AllowAnyMethod());
 });
 
-builder.Configuration.AddJsonFile(@"C:\SocialMediaApp\SocialMediaApp.Persistencia\ConnectionStrings.json", optional: false, reloadOnChange: true);
-
 var app = builder.Build();
 
 app.UseCors("AllowFrontend");

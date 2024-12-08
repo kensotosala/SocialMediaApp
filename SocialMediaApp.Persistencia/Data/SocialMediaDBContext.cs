@@ -43,14 +43,7 @@ public partial class SocialMediaDBContext : DbContext
     public virtual DbSet<Usuario> Usuarios { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        if (!optionsBuilder.IsConfigured)
-        {
-            var connectionString = _configuration.GetConnectionString("DefaultConnection");
-
-            optionsBuilder.UseSqlServer(connectionString);
-        }
-    }
+        => optionsBuilder.UseSqlServer("Server=KENDALL-PC\\SQLEXPRESS;Database=SocialMediaDB;Trusted_Connection=True;Encrypt=False;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

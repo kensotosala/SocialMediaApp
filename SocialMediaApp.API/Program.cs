@@ -15,11 +15,10 @@ builder.Services.AddControllers()
 //llamar al metodo que inyecta nuestras dependencias
 InyectarDependencias.ConfiguracionServicios(builder.Services);
 
-builder.Configuration.AddJsonFile(@"C:\SocialMediaApp\SocialMediaApp.Persistencia\ConnectionStrings.json", optional: false, reloadOnChange: true);
 
 //Configurar la conexion string
 builder.Services.AddDbContext<SocialMediaDBContext>(
-    options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
+    options => options.UseSqlServer(builder.Configuration.GetConnectionString("SocialMediaDB"))
     );
 
 builder.Services.AddControllers();
