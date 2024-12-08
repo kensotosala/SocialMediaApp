@@ -51,5 +51,24 @@ namespace SocialMediaApp.API.Controllers
         {
             return Ok(new { resultado = await _repNotificaciones.insertar(notificacion) });
         }
+        // Obtener una notificación específica por ID
+        [HttpGet("ObtenerPorId/{id}")]
+        public async Task<ActionResult> ObtenerPorId(int id)
+        {
+            // Llama al repositorio para buscar la notificación
+            var notificacion = await _repNotificaciones.ObtenerPorIdAsync(id);
+
+            if (notificacion == null)
+            {
+                // Si no se encuentra, retorna un 404 Not Found
+                return NotFound(new { mensaje = "No se encontró la notificación con el ID proporcionado." });
+            }
+
+            // Devuelve la notificación como respuesta
+            return Ok(notificacion);
+        }
+
+
+
     }
 }
