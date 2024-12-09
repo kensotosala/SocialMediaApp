@@ -95,8 +95,41 @@ namespace SocialMediaApp.Persistencia.Repositorios
             // Agregar la invitación a la base de datos
             _context.InvitadosEventos.Add(nuevaInvitacion);
             await _context.SaveChangesAsync();
+
+        }
+        public async Task<List<InvitadosEvento>> ObtenerInvitadosPorEventoAsync(int eventoId)
+        {
+            return await _context.InvitadosEventos
+                .Where(i => i.EventoId == eventoId)
+                .Include(i => i.Usuario) // Incluye información del usuario invitado
+                .ToListAsync();
+        }
+        public async Task<InvitadosEvento?> ObtenerInvitacionPorIdAsync(int invitacionId)
+        {
+            return await _context.InvitadosEventos
+                .Include(i => i.Usuario) // Incluye información del usuario invitado
+                .FirstOrDefaultAsync(i => i.InvitadoId == invitacionId);
+        }
+        public async Task EliminarInvitacionAsync(int invitacionId)
+        {
+            var invitacion = await _context.InvitadosEventos.FindAsync(invitacionId);
+            if (invitacion != null)
+            {
+                _context.InvitadosEventos.Remove(invitacion);
+                await _context.SaveChangesAsync();
+            }
         }
 
+        // Modifica el estado de una invitación
+        public async Task ModificarEstadoInvitacionAsync(int invitacionId, string nuevoEstado)
+        {
+            var invitacion = await _context.InvitadosEventos.FindAsync(invitacionId);
+            if (invitacion != null)
+            {
+                invitacion.Confirmacion = nuevoEstado; // Cambia el estado (Ej. "Pendiente", "Asistiré", etc.)
+                await _context.SaveChangesAsync();
+            }
+        }
 
 
 
