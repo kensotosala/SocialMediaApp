@@ -11,10 +11,12 @@ namespace SocialMediaApp.API.Controllers
     public class EventoControllerAPI : Controller
     {
         private readonly IEvento _repEvento;
+        private readonly INotificaciones _repNotificacion;
 
-        public EventoControllerAPI(IEvento repEvento)
+        public EventoControllerAPI(IEvento repEvento, INotificaciones repNotificacion)
         {
             _repEvento = repEvento;
+            _repNotificacion = repNotificacion;
         }
 
         // Obtiene los eventos de un usuario autenticado
@@ -35,6 +37,7 @@ namespace SocialMediaApp.API.Controllers
             }).ToList();
 
             var jsonRes = JsonConvert.SerializeObject(eventoDTO);
+
             return Content(jsonRes, "application/json");
         }
 
@@ -53,6 +56,19 @@ namespace SocialMediaApp.API.Controllers
             };
 
             await _repEvento.AgregarEventoAsync(evento);
+
+            // Crear la notificación para el usuario asociado al evento (por ejemplo, el creador)
+            var notificacion = new Notificacione
+            {
+                UsuarioId = eventoDTO.UsuarioId,  // Notificar al usuario que creó el evento
+                Tipo = "Evento",  // Tipo de notificación
+                Descripcion = $"Has creado un nuevo evento: {evento.Titulo}",  // Descripción de la notificación
+                Fecha = DateTime.Now,  // Fecha actual
+                EsLeida = false  // Estado de la notificación (no leída)
+            };
+
+            // Guardar la notificación para el usuario
+            await _repNotificacion.insertar(notificacion);
 
             return CreatedAtAction(nameof(ObtenerEvento), new { id = evento.EventoId }, evento);
         }
