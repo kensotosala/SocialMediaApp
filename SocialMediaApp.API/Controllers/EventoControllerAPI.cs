@@ -106,53 +106,7 @@ namespace SocialMediaApp.API.Controllers
             return NoContent();
         }
 
-        [HttpPost("invitar al usuario")]
-        public async Task<IActionResult> InvitarUsuario(int eventoId, int usuarioId)
-        {
-            try
-            {
-                await _repEvento.InvitarUsuarioAsync(eventoId, usuarioId);
-                return Ok(new { message = "Usuario invitado exitosamente." });
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { message = ex.Message });
-            }
-        }
+       
 
-        [HttpGet("ObtenerInvitados/{eventoId}")]
-        public async Task<ActionResult> ObtenerInvitados(int eventoId)
-        {
-            var invitados = await _repEvento.ObtenerInvitadosPorEventoAsync(eventoId);
-            return Ok(invitados);
-        }
-
-        // Obtiene la información de un invitado por ID de invitación
-        [HttpGet("ObtenerInvitacion/{invitacionId}")]
-        public async Task<ActionResult> ObtenerInvitacion(int invitacionId)
-        {
-            var invitacion = await _repEvento.ObtenerInvitacionPorIdAsync(invitacionId);
-            if (invitacion == null)
-            {
-                return NotFound(new { mensaje = "La invitación no fue encontrada." });
-            }
-            return Ok(invitacion);
-        }
-
-        // Elimina una invitación por ID
-        [HttpDelete("EliminarInvitacion/{invitacionId}")]
-        public async Task<ActionResult> EliminarInvitacion(int invitacionId)
-        {
-            await _repEvento.EliminarInvitacionAsync(invitacionId);
-            return NoContent();
-        }
-
-        // Modifica el estado de una invitación
-        [HttpPut("ModificarEstadoInvitacion/{invitacionId}")]
-        public async Task<ActionResult> ModificarEstadoInvitacion(int invitacionId, [FromBody] string nuevoEstado)
-        {
-            await _repEvento.ModificarEstadoInvitacionAsync(invitacionId, nuevoEstado);
-            return Ok(new { mensaje = "Estado de la invitación actualizado." });
-        }
     }
 }
