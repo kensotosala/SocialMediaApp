@@ -20,7 +20,6 @@ namespace SocialMediaApp.Persistencia.Repositorios
             return await _context.Eventos
             .Include(e => e.InvitadosEventos)
               .FirstOrDefaultAsync(e => e.EventoId == eventoID);
-
         }
 
         // Obtiene un evento específico
@@ -66,6 +65,7 @@ namespace SocialMediaApp.Persistencia.Repositorios
                 await _context.SaveChangesAsync();
             }
         }
+
         public async Task InvitarUsuarioAsync(int eventoId, int usuarioId)
         {
             // Validar si el evento existe
@@ -95,8 +95,8 @@ namespace SocialMediaApp.Persistencia.Repositorios
             // Agregar la invitación a la base de datos
             _context.InvitadosEventos.Add(nuevaInvitacion);
             await _context.SaveChangesAsync();
-
         }
+
         public async Task<List<InvitadosEvento>> ObtenerInvitadosPorEventoAsync(int eventoId)
         {
             return await _context.InvitadosEventos
@@ -104,12 +104,14 @@ namespace SocialMediaApp.Persistencia.Repositorios
                 .Include(i => i.Usuario) // Incluye información del usuario invitado
                 .ToListAsync();
         }
+
         public async Task<InvitadosEvento?> ObtenerInvitacionPorIdAsync(int invitacionId)
         {
             return await _context.InvitadosEventos
                 .Include(i => i.Usuario) // Incluye información del usuario invitado
                 .FirstOrDefaultAsync(i => i.InvitadoId == invitacionId);
         }
+
         public async Task EliminarInvitacionAsync(int invitacionId)
         {
             var invitacion = await _context.InvitadosEventos.FindAsync(invitacionId);
@@ -126,12 +128,9 @@ namespace SocialMediaApp.Persistencia.Repositorios
             var invitacion = await _context.InvitadosEventos.FindAsync(invitacionId);
             if (invitacion != null)
             {
-                invitacion.Confirmacion = nuevoEstado; // Cambia el estado (Ej. "Pendiente", "Asistiré", etc.)
+                invitacion.Confirmacion = nuevoEstado;
                 await _context.SaveChangesAsync();
             }
         }
-
-
-
     }
 }

@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using SocialMediaApp.Dominio.DTO;
 using SocialMediaApp.Dominio.Interfaces;
 using SocialMediaApp.Persistencia.Data;
 
@@ -16,19 +18,43 @@ namespace SocialMediaApp.API.Controllers
         }
 
         // Obtiene los eventos de un usuario autenticado
-        [HttpGet("obtnerTodosLosEventos")]
+        [HttpGet("obtenerTodosLosEventos")]
         public async Task<IActionResult> ObtenerMisEventos()
         {
-            var eventos = await _repEvento.ObtenerEventoAsync();
-            return Ok(eventos);
+            var resultado = await _repEvento.ObtenerEventoAsync();
+
+            var eventoDTO = resultado.Select(n => new EventoDTO
+            {
+                EventoId = n.EventoId,
+                UsuarioId = n.UsuarioId,
+                Titulo = n.Titulo,
+                Descripcion = n.Descripcion,
+                FechaEvento = n.FechaEvento,
+                Ubicacion = n.Ubicacion,
+                FechaCreacion = n.FechaCreacion,
+            }).ToList();
+
+            var jsonRes = JsonConvert.SerializeObject(eventoDTO);
+            return Content(jsonRes, "application/json");
         }
 
-        // Crea un nuevo evento
+        // Endpoint para crear un evento
         [HttpPost("crear")]
-        public async Task<IActionResult> CrearEvento(Evento evento)
+        public async Task<IActionResult> CrearEvento([FromBody] CrearEventoDTO eventoDTO)
         {
+            var evento = new Evento
+            {
+                UsuarioId = eventoDTO.UsuarioId,
+                Titulo = eventoDTO.Titulo,
+                Descripcion = eventoDTO.Descripcion,
+                FechaEvento = eventoDTO.FechaEvento,
+                Ubicacion = eventoDTO.Ubicacion,
+                FechaCreacion = DateTime.Now
+            };
+
             await _repEvento.AgregarEventoAsync(evento);
-            return CreatedAtAction(nameof(ObtenerMisEventos), new { id = evento.EventoId }, evento);
+
+            return CreatedAtAction(nameof(ObtenerEvento), new { id = evento.EventoId }, evento);
         }
 
         // Obtiene un evento específico
@@ -77,12 +103,14 @@ namespace SocialMediaApp.API.Controllers
                 return BadRequest(new { message = ex.Message });
             }
         }
+
         [HttpGet("ObtenerInvitados/{eventoId}")]
         public async Task<ActionResult> ObtenerInvitados(int eventoId)
         {
             var invitados = await _repEvento.ObtenerInvitadosPorEventoAsync(eventoId);
             return Ok(invitados);
         }
+
         // Obtiene la información de un invitado por ID de invitación
         [HttpGet("ObtenerInvitacion/{invitacionId}")]
         public async Task<ActionResult> ObtenerInvitacion(int invitacionId)
@@ -94,6 +122,7 @@ namespace SocialMediaApp.API.Controllers
             }
             return Ok(invitacion);
         }
+
         // Elimina una invitación por ID
         [HttpDelete("EliminarInvitacion/{invitacionId}")]
         public async Task<ActionResult> EliminarInvitacion(int invitacionId)
@@ -109,6 +138,5 @@ namespace SocialMediaApp.API.Controllers
             await _repEvento.ModificarEstadoInvitacionAsync(invitacionId, nuevoEstado);
             return Ok(new { mensaje = "Estado de la invitación actualizado." });
         }
-
     }
 }
