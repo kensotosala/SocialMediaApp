@@ -2,6 +2,7 @@ using SocialMediaApp.Persistencia.Servicios;
 using SocialMediaApp.Persistencia.Data;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Http.Features;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -43,7 +44,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
 app.UseAuthorization();
 
 app.MapControllers();
