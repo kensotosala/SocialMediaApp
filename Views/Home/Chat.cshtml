@@ -1,0 +1,89 @@
+﻿@{
+    Layout = null; // Hacer la vista independiente si se desea
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Manual</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet"> <!-- Íconos -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"> <!-- Bootstrap -->
+    <link rel="stylesheet" href="~/css/chat.css" asp-append-version="true" />
+</head>
+<body class="bg-light">
+    <div class="chat-container d-flex flex-column mx-auto shadow-lg rounded-3">
+        <!-- Header del chat -->
+        <header class="chat-header bg-primary text-white d-flex align-items-center px-3 py-2">
+            <div class="profile-pic me-2">
+                <img src="https://via.placeholder.com/40" class="rounded-circle" alt="Profile">
+            </div>
+            <div>
+                <h6 class="mb-0">Chat Manual</h6>
+                <small id="status">Es tu turno</small>
+            </div>
+        </header>
+
+        <!-- Cuerpo del chat -->
+        <main class="chat-body flex-grow-1 p-3 overflow-auto" id="chatBody">
+            <!-- Mensajes cargados dinámicamente -->
+        </main>
+
+        <!-- Input del chat -->
+        <footer class="chat-footer bg-white px-3 py-2 d-flex align-items-center border-top">
+            <input type="text" class="form-control me-2" placeholder="Escribe un mensaje..." id="chatInput" aria-label="Escribe un mensaje">
+            <button class="btn btn-primary" id="sendMessageButton" aria-label="Enviar mensaje">
+                <i class="bi bi-send"></i>
+            </button>
+        </footer>
+    </div>
+
+    <script>
+        const chatBody = document.getElementById('chatBody');
+        const chatInput = document.getElementById('chatInput');
+        const sendMessageButton = document.getElementById('sendMessageButton');
+        const status = document.getElementById('status');
+
+        // Variable para alternar turnos
+        let isUserTurn = true;
+
+        // Enviar mensaje
+        sendMessageButton.addEventListener('click', () => {
+            const message = chatInput.value.trim();
+            if (message) {
+                if (isUserTurn) {
+                    addMessage(message, 'sent'); // Mensaje del usuario
+                    status.textContent = "Turno de la otra persona";
+                } else {
+                    addMessage(message, 'received'); // Respuesta de la otra persona
+                    status.textContent = "Es tu turno";
+                }
+                isUserTurn = !isUserTurn; // Cambiar turno
+                chatInput.value = ''; // Limpiar el input
+            }
+        });
+
+        chatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                sendMessageButton.click();
+            }
+        });
+
+        // Agregar un mensaje al chat
+        function addMessage(message, type) {
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('message', type);
+            messageDiv.innerHTML = `
+                <p>${message}</p>
+                <small class="text-muted">${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</small>
+            `;
+            chatBody.appendChild(messageDiv);
+            chatBody.scrollTop = chatBody.scrollHeight; // Auto scroll
+        }
+    </script>
+
+    <style>
+        
+    </style>
+</body>
+</html>

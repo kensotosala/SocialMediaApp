@@ -1,0 +1,318 @@
+﻿@using SocialMediaApp.Dominio.Dto
+@model PublicacionesDTO
+<div class="container mt-4">
+    <h2 class="text-center mb-4">📢 Muro de Publicaciones</h2>
+
+    <!-- Crear nuevas publicaciones -->
+    <div class="card my-3 shadow-sm">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Crea una nueva publicación</h5>
+        </div>
+        <div class="card-body">
+            <form method="post" enctype="multipart/form-data">
+                <!-- Campo de texto -->
+                <div class="form-floating mb-3">
+                    <textarea class="form-control" id="content" name="content" placeholder="Escribe algo..." rows="3"></textarea>
+                    <label for="content">¿Qué tienes en mente?</label>
+                </div>
+                <!-- Subir imagen -->
+                <div class="mb-3">
+                    <label for="image" class="form-label">📷 Subir imagen</label>
+                    <input class="form-control" type="file" id="image" name="image">
+                    <div id="error-message" style="color: red; display: none;">Por favor, sube una imagen válida.</div>
+                </div>
+                <!-- links -->
+                <div class="mb-3">
+                    <label for="link" class="form-label">🔗 Agregar link</label>
+                    <input class="form-control" type="url" id="link" name="link" placeholder="https://example.com">
+                </div>
+                <!-- Fecha -->
+                <input type="hidden" id="postDate" name="postDate">
+                <!-- Botón publicar -->
+                <div class="d-grid">
+                    <button id="Send" type="submit" class="btn btn-primary">💬 Publicar</button>  <!-- Refresh de la página -->
+
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- Selector de filtro -->
+    <div class="mb-4">
+        <label for="filter" class="form-label">Filtrar publicaciones por:</label>
+        <select id="filter" class="form-select">
+            <option value="all">Todos</option>
+            <option value="text">Texto</option>
+            <option value="image">Imagen</option>
+            <option value="date">Fecha</option>
+        </select>
+    </div>
+    <!-- Contenedor de publicaciones -->
+    <div id="posts"></div>
+
+
+
+    <script>
+        //Agregar posts
+                    document.querySelector('form').addEventListener('submit', function (e) {
+                e.preventDefault(); 
+                const content = document.getElementById('content').value;
+                const image = document.getElementById('image').files[0];
+                const link = document.getElementById('link').value;
+                const date = new Date().toISOString().slice(0, 10);
+                if (!content && !image && !link) {
+                    alert("Por favor, ingresa texto, una imagen o un enlace para publicar.");
+                    return;
+                }
+                const postContainer = document.createElement('div');
+                postContainer.className = 'card mb-3';
+                postContainer.innerHTML = `
+                    <div class="card-header">
+                        <img src="/images/profile1.jpg" alt="Imagen de perfil" class="rounded-circle me-2" style="width: 40px; height: 40px;">
+                        <strong>Usuario Actual</strong>
+                        <small class="text-muted">${date}</small>
+                    </div>
+                    <div class="card-body">
+                        ${content ? `<p>${content}</p>` : ''}
+                        ${image ? `<img src="#" alt="Imagen subida" class="img-fluid rounded">` : ''}
+                        ${link ? `<a href="${link}" target="_blank" class="d-block mt-2 text-primary">Visitar enlace</a>` : ''}
+                    </div>
+                    <div class="card-footer">
+                        <button class="btn btn-outline-primary btn-sm reaction-btn" data-reaction="👍 Me gusta">👍 Me gusta</button>
+                        <button class="btn btn-outline-primary btn-sm reaction-btn" data-reaction="😂 Me divierte">😂 Me divierte</button>
+                        <button class="btn btn-outline-primary btn-sm reaction-btn" data-reaction="😡 Me enoja">😡 Me enoja</button>
+                        <button class="btn btn-outline-primary btn-sm reaction-btn" data-reaction="😭 Me entristece">😭 Me entristece</button>
+                        <button class="btn btn-outline-primary btn-sm reaction-btn" data-reaction="😱 Me asombra">😱 Me asombra</button>
+                        <button class="btn btn-outline-secondary btn-sm" onclick="toggleComments()">💬 Comentar</button>
+                        <div class="comments-section mt-3" style="display:none;">
+                            <textarea class="form-control mb-2" placeholder="Escribe un comentario..."></textarea>
+                            <button class="btn btn-primary btn-sm">Enviar</button>
+                        </div>
+                    </div>
+                `;
+                document.getElementById('posts').prepend(postContainer);
+                document.querySelector('form').reset();
+            });
+        // reacciones
+        document.querySelectorAll('.reaction-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const allButtons = this.closest('.card-footer').querySelectorAll('.reaction-btn');
+                allButtons.forEach(btn => {
+                    btn.disabled = false;
+                    btn.textContent = btn.getAttribute('data-reaction');
+                });
+                this.textContent = `Reaccionado con ${this.getAttribute('data-reaction')}`;
+                this.disabled = true;
+            });
+        });
+        // abrir y cerrar comentarios
+        function toggleComments(usuarioID) {
+            const commentsSection = document.getElementById('comments-' + usuarioID);
+            if (commentsSection.style.display === "none") {
+                commentsSection.style.display = "block";
+            } else {
+                commentsSection.style.display = "none";
+            }
+        }
+        // fechas de publicaciones y comentarios
+        document.querySelector('form').addEventListener('submit', function(e) {
+            const currentDate = new Date().toISOString().slice(0, 10);
+            document.getElementById('postDate').value = currentDate;
+        });
+        document.querySelectorAll('.comments-section button').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const commentDate = new Date().toISOString().slice(0, 10);
+                const commentText = this.previousElementSibling.value;
+                if (commentText) {
+                    const commentsDiv = this.closest('.comments-section').querySelector('.existing-comments');
+                    commentsDiv.innerHTML += `<p><strong>Usuario Actual:</strong> ${commentText} <small class="text-muted">${commentDate}</small></p>`;
+                    this.previousElementSibling.value = '';
+                }
+            });
+        });
+
+        // Función para cargar los datos
+        async function cargarDatos() {
+            try {
+                const response = await fetch('/data/data.txt');
+                const dataText = await response.text();
+
+                // Dividir las secciones
+                const secciones = dataText.split(/\[.*?\]/).map(s => s.trim()).filter(s => s);
+                const usuariosText = secciones[0];
+                const amistadesText = secciones[1];
+                const publicacionesText = secciones[2];
+                const comentariosText = secciones[3];
+                const reaccionesText = secciones[4];
+
+                // Procesar los usuarios
+                const usuarios = usuariosText.split('\n').map(line => {
+                    const parts = line.split('|');
+                    return {
+                        UsuarioID: parts[0],
+                        NombreUsuario: parts[1],
+                        FotoPerfil: parts[3],
+                    };
+                });
+
+                // Procesar las publicaciones
+                const publicaciones = publicacionesText.split('\n').map(line => {
+                    const parts = line.split('|');
+                    return {
+                        PublicacionID: parts[0],
+                        UsuarioID: parts[1],
+                        Texto: parts[2],
+                        Imagen: parts[3],
+                        Enlace: parts[4],
+                        FechaPublicacion: parts[5]
+                    };
+                });
+
+                // Procesar los comentarios
+                const comentarios = comentariosText.split('\n').map(line => {
+                    const parts = line.split('|');
+                    return {
+                        ComentarioID: parts[0],
+                        PublicacionID: parts[1],
+                        UsuarioID: parts[2],
+                        Texto: parts[3],
+                        FechaComentario: parts[4]
+                    };
+                });
+
+                // Procesar las reacciones
+                const reacciones = reaccionesText.split('\n').map(line => {
+                    const parts = line.split('|');
+                    return {
+                        ReaccionID: parts[0],
+                        PublicacionID: parts[1],
+                        TipoReaccion: parts[3]
+                    };
+                });
+
+                // Crear HTML dinámicamente
+                const postsContainer = document.getElementById('posts');
+                publicaciones.forEach(post => {
+                    const usuario = usuarios.find(u => u.UsuarioID === post.UsuarioID);
+                    const comentariosDePublicacion = comentarios.filter(c => c.PublicacionID === post.PublicacionID);
+                    const reaccionesDePublicacion = reacciones.filter(r => r.PublicacionID === post.PublicacionID);
+
+                    // Crear el HTML de la publicación
+                    const postElement = document.createElement('div');
+                    postElement.classList.add('card', 'mb-3');
+
+                    postElement.innerHTML = `
+                        <div class="card-header">
+                            <img src="${usuario?.FotoPerfil || '/images/profile1.jpg'}" alt="Imagen de perfil" class="rounded-circle me-2" style="width: 40px; height: 40px;">
+                            <strong>${usuario?.NombreUsuario}</strong>
+                            <small class="text-muted">${post.FechaPublicacion}</small>
+                        </div>
+                        <div class="card-body">
+                            ${post.Texto ? `<p>${post.Texto}</p>` : ''}
+                            ${post.Imagen ? `<img src="${post.Imagen}" alt="Imagen de publicación" class="img-fluid rounded">` : ''}
+                            ${post.Enlace ? `<a href="${post.Enlace}" target="_blank" class="d-block mt-2 text-primary">Visitar enlace</a>` : ''}
+                        </div>
+                        <div class="card-footer">
+                            <div class="mt-2 reactions-count">
+                                <span class="reaction-count" data-reaction="👍">👍: ${reaccionesDePublicacion.filter(r => r.TipoReaccion === "Me gusta").length}</span>
+                                <span class="reaction-count" data-reaction="😂">😂: ${reaccionesDePublicacion.filter(r => r.TipoReaccion === "Me divierte").length}</span>
+                                <span class="reaction-count" data-reaction="😡">😡: ${reaccionesDePublicacion.filter(r => r.TipoReaccion === "Me enoja").length}</span>
+                                <span class="reaction-count" data-reaction="😭">😭: ${reaccionesDePublicacion.filter(r => r.TipoReaccion === "Me entristece").length}</span>
+                                <span class="reaction-count" data-reaction="😱">😱: ${reaccionesDePublicacion.filter(r => r.TipoReaccion === "Me asombra").length}</span>
+                            </div>
+                            <button class="btn btn-outline-primary btn-sm reaction-btn" data-reaction="👍 Me gusta">👍 Me gusta</button>
+                            <button class="btn btn-outline-primary btn-sm reaction-btn" data-reaction="😂 Me divierte">😂 Me divierte</button>
+                            <button class="btn btn-outline-primary btn-sm reaction-btn" data-reaction="😡 Me enoja">😡 Me enoja</button>
+                            <button class="btn btn-outline-primary btn-sm reaction-btn" data-reaction="😭 Me entristece">😭 Me entristece</button>
+                            <button class="btn btn-outline-primary btn-sm reaction-btn" data-reaction="😱 Me asombra">😱 Me asombra</button>
+                            <button class="btn btn-outline-secondary btn-sm" onclick="toggleComments('${post.PublicacionID}')">💬 Comentar</button>
+                            <div id="comments-${post.PublicacionID}" class="comments-section mt-3" style="display:none;">
+                                <textarea class="form-control mb-2" placeholder="Escribe un comentario..."></textarea>
+                                <button class="btn btn-primary btn-sm">Enviar</button>
+                                <div class="existing-comments mt-3">
+                                    ${comentariosDePublicacion.map(comentario => {
+                                        const usuarioComentario = usuarios.find(u => u.UsuarioID === comentario.UsuarioID);
+                                        return `
+                                            <div class="d-flex align-items-start mb-2">
+                                                <img src="${usuarioComentario?.FotoPerfil || '/images/profile1.jpg'}" alt="Imagen de Perfil" class="rounded-circle me-2" style="width: 30px; height: 30px;">
+                                                <div>
+                                                    <p class="mb-1">
+                                                        <strong>${usuarioComentario?.NombreUsuario}:</strong> ${comentario.Texto}
+                                                    </p>
+                                                    <small class="text-muted">${comentario.FechaComentario}</small>
+                                                </div>
+                                            </div>
+                                        `;
+                                    }).join('')}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+
+                    postsContainer.appendChild(postElement);
+                });
+
+            } catch (error) {
+                console.error('Error al cargar los datos:', error);
+            }
+        }
+
+        // Llamar a la función para cargar los datos
+        cargarDatos();
+
+                    // Filtros
+            document.getElementById('filter').addEventListener('change', function() {
+                const filterValue = this.value;
+                const posts = document.querySelectorAll('.card.mb-3');
+                posts.forEach(post => {
+                    const textContent = post.querySelector('.card-body p');
+                    const imageContent = post.querySelector('.card-body img');
+                    const linkContent = post.querySelector('.card-body a');
+                    const postDate = post.querySelector('.card-header small').textContent;
+                    let shouldDisplay = false;
+                    if (filterValue === 'all') {
+                        shouldDisplay = true;
+                    } else if (filterValue === 'text' && textContent) {
+                        shouldDisplay = true;
+                    } else if (filterValue === 'image' && imageContent) {
+                        shouldDisplay = true;
+                    } else if (filterValue === 'date' && postDate) {
+                        shouldDisplay = true;
+                    }
+                    if (shouldDisplay) {
+                        post.style.display = 'block';
+                    } else {
+                        post.style.display = 'none';
+                    }
+                });
+            });
+            //Detector de imagenes válidas
+                        document.getElementById('image').addEventListener('change', function () {
+                const file = this.files[0];
+                const errorMessage = document.getElementById('error-message');
+                if (file) {
+                    const fileReader = new FileReader();
+                    fileReader.onloadend = function () {
+                        const arr = new Uint8Array(fileReader.result).subarray(0, 4);
+                        let header = "";
+                        for (let i = 0; i < arr.length; i++) {
+                            header += arr[i].toString(16);
+                        }
+                        const mimeTypes = {
+                            "89504e47": "image/png",
+                            "ffd8ffe0": "image/jpeg",
+                            "ffd8ffe1": "image/jpeg",
+                            "ffd8ffe2": "image/jpeg",
+                            "47494638": "image/gif"
+                        };
+                        if (!mimeTypes[header]) {
+                            errorMessage.style.display = 'block';
+                            document.getElementById('image').value = "";
+                        } else {
+                            errorMessage.style.display = 'none';
+                        }
+                    };
+
+                    fileReader.readAsArrayBuffer(file);
+                }
+            });
+    </script>
