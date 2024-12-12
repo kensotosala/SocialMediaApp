@@ -66,6 +66,8 @@ namespace SocialMediaApp.API.Controllers
         [Route("RegisterGoogle")]
         public async Task<ActionResult> RegisterGoogle([FromBody] Usuario user)
         {
+            user.AutenticacionExternal = true;
+
             return Ok(new { result = await _authRep.Register(user) });
         }
 

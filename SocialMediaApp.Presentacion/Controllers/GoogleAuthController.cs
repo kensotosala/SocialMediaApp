@@ -57,7 +57,8 @@ namespace SocialMediaApp.Presentacion.Controllers
                     {
                         NombreUsuario = user.NombreUsuario,
                         Nombre = user.Nombre,
-                        Email = user.Email
+                        Email = user.Email,
+                        AutenticacionExternal = true
                     });
 
                     return RedirectToAction("Index", "Home");
@@ -98,6 +99,7 @@ namespace SocialMediaApp.Presentacion.Controllers
 
             if (ModelState.IsValid)
             {
+
                 string url = "http://localhost:5142/api/APIAuth/RegisterGoogle";
 
                 string jsonData = JsonConvert.SerializeObject(user);
@@ -117,7 +119,8 @@ namespace SocialMediaApp.Presentacion.Controllers
                     {
                         NombreUsuario = user.NombreUsuario,
                         Nombre = user.Nombre,
-                        Email = user.Email
+                        Email = user.Email,
+                        AutenticacionExternal = true
                     });
                 }
             }
@@ -126,9 +129,15 @@ namespace SocialMediaApp.Presentacion.Controllers
 
         private async Task RegisterClaims(UsuarioDto user)
         {
+            int external = 0;
+
+            if (user.AutenticacionExternal)
+                external = 1;
+
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.NameIdentifier, user.Nombre)
+                new Claim(ClaimTypes.NameIdentifier, user.Nombre),
+                new Claim("ExternalLogin", external.ToString())
             };
 
             var claimIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);

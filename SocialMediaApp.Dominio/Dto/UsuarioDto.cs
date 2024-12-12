@@ -19,5 +19,7 @@
         public string? Intereses { get; set; }
 
         public bool? EsPremium { get; set; }
+
+        public bool AutenticacionExternal { get; set; }
     }
 }

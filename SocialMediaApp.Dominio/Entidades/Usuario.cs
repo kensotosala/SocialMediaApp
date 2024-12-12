@@ -1,4 +1,7 @@
-﻿namespace SocialMediaApp.Persistencia.Data;
+﻿using System;
+using System.Collections.Generic;
+
+namespace SocialMediaApp.Persistencia.Data;
 
 public partial class Usuario
 {
@@ -12,9 +15,9 @@ public partial class Usuario
 
     public string? SalContraseña { get; set; }
 
-    public string? Nombre { get; set; } = null!;
+    public string Nombre { get; set; } = null!;
 
-    public string? Apellido { get; set; } = null!;
+    public string Apellido { get; set; } = null!;
 
     public string? FotoPerfil { get; set; }
 
@@ -27,6 +30,8 @@ public partial class Usuario
     public bool? EsPremium { get; set; }
 
     public DateTime? FechaRegistro { get; set; }
+
+    public bool? AutenticacionExternal { get; set; }
 
     public virtual ICollection<Amistade> AmistadeAmigos { get; set; } = new List<Amistade>();
 

@@ -300,7 +300,7 @@
 </head>
 
 <body>
-    <div class="container">
+    @*    <div class="container">
         <div class="profile-header">
             <h1 class="profile-title">Gestionar Perfil</h1>
             <div class="profile-image-container">
@@ -311,7 +311,7 @@
             </div>
         </div>
 
-        <form class="profile-form">
+         <form class="profile-form">
             <div class="form-group">
                 <label class="form-label" for="nombre">Nombre completo</label>
                 <input type="text" id="nombre" class="form-control" placeholder="Tu nombre completo">
@@ -372,7 +372,7 @@
 
                 <button type="submit" class="btn-save">Guardar cambios</button>
         </form>
-    </div>
+    </div> *@
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
@@ -911,7 +911,34 @@
                 <div class="interests-container" id="interests-container"></div>
             </div>
 
+            @if (User.Claims.FirstOrDefault(c => c.Type == "ExternalLogin")?.Value == "1")
+            {
+                <fieldset disabled>
+                <div class="password-section" disabled="disabled">
+                    <h2 class="profile-title">Cambiar contraseña</h2>
+                        <h4 class="text-danger"> Debes gestionar tu contraseña en tu cuenta de Google.</h4>
+                    <div class="form-group">
+                        <label class="form-label" for="current-password">Contraseña actual</label>
+                        <input type="password" id="current-password" class="form-control">
+                    </div>
 
+                    <div class="form-group">
+                        <label class="form-label" for="new-password">Nueva contraseña</label>
+                        <input type="password" id="new-password" class="form-control">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="confirm-password">Confirmar nueva contraseña</label>
+                        <input type="password" id="confirm-password" class="form-control">
+                    </div>
+                </div>
+                
+                    </fieldset>
+
+                <button type="submit" class="btn btn-primary" disabled>Guardar cambios</button>
+            }
+            else
+            {
                 <div class="password-section">
                     <h2 class="profile-title">Cambiar contraseña</h2>
                     <div class="form-group">
@@ -929,8 +956,9 @@
                         <input type="password" id="confirm-password" class="form-control">
                     </div>
                 </div>
-
                 <button type="submit" class="btn-save">Guardar cambios</button>
+            }
+
         </form>
     </div>
 

@@ -61,7 +61,8 @@ namespace SocialMediaApp.Presentacion.Controllers
                     await RegisterClaims(new UsuarioDto
                     {
                         Nombre = userDto.Nombre,
-                        Email = userDto.Email
+                        Email = userDto.Email,
+                        AutenticacionExternal = false
                     });
 
                     return RedirectToAction("Index", "Home");
@@ -122,7 +123,8 @@ namespace SocialMediaApp.Presentacion.Controllers
                         NombreUsuario = user.NombreUsuario,
                         Nombre = user.Nombre,
                         Apellido = user.Apellido,
-                        Email = user.Email
+                        Email = user.Email,
+                        AutenticacionExternal = false
                     });
 
                     return RedirectToAction("Index", "Home");

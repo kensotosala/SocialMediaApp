@@ -11,10 +11,6 @@ public partial class AutenticacionSocial
 
     public int? ProveedorId { get; set; }
 
-    public string Token { get; set; } = null!;
-
-    public DateTime? FechaAutenticacion { get; set; }
-
     public virtual ProveedorAutenticacion? Proveedor { get; set; }
 
     public virtual Usuario? Usuario { get; set; }
