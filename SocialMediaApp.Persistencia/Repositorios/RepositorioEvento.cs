@@ -89,7 +89,7 @@ namespace SocialMediaApp.Persistencia.Repositorios
             {
                 EventoId = eventoId,
                 UsuarioId = usuarioId,
-                Confirmacion = "Pendiente" // Estado inicial
+                Confirmacion = "Pendiente"
             };
 
             // Agregar la invitación a la base de datos
@@ -101,14 +101,14 @@ namespace SocialMediaApp.Persistencia.Repositorios
         {
             return await _context.InvitadosEventos
                 .Where(i => i.EventoId == eventoId)
-                .Include(i => i.Usuario) // Incluye información del usuario invitado
+                .Include(i => i.Usuario)
                 .ToListAsync();
         }
 
         public async Task<InvitadosEvento?> ObtenerInvitacionPorIdAsync(int invitacionId)
         {
             return await _context.InvitadosEventos
-                .Include(i => i.Usuario) // Incluye información del usuario invitado
+                .Include(i => i.Usuario)
                 .FirstOrDefaultAsync(i => i.InvitadoId == invitacionId);
         }
 

@@ -47,7 +47,7 @@ namespace SocialMediaApp.API.Controllers
         {
             var evento = new Evento
             {
-                UsuarioId = eventoDTO.UsuarioId,
+                UsuarioId = eventoDTO.UsuarioId ?? 1,
                 Titulo = eventoDTO.Titulo,
                 Descripcion = eventoDTO.Descripcion,
                 FechaEvento = eventoDTO.FechaEvento,

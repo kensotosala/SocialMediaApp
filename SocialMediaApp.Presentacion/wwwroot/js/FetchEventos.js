@@ -1,4 +1,4 @@
-﻿const EVENTOS_API = "http://localhost:5142/api/EventoControllerAPI/obtenerTodosLosEventos";
+﻿clockconst EVENTOS_API = "http://localhost:5142/api/EventoControllerAPI/obtenerTodosLosEventos";
 
 /**
  * cargarEventos(): Se utiliza para cargar los eventos dentro en el dropdown.
