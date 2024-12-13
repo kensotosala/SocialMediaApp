@@ -20,10 +20,7 @@ namespace SocialMediaApp.Dominio.ViewModels
         public string Contraseña { get; set; } = null!;
 
         [Compare("Contraseña", ErrorMessage = "Las contraseñas ingresadas no coinciden.")]
-        [Required(ErrorMessage = "Se debe confirmar la contraseña.")]
-        [StringLength(128, MinimumLength = 8, ErrorMessage = "La contraseña debe contener entre 8 and 16 characters.")]
-        [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*[\!\@\#\$\%\^\&\*\(\)\,\.\?\"":\{\}\|<>\=\+])[A-Za-z\d\!\@\#\$\%\^\&\*\(\)\,\.\?\"":\{\}\|<>\=\+]+$",
-                ErrorMessage = "La contraseña debe contener al menos una letra mayúscula, una letra minúscula y un carácter especial")]
+        [Required(ErrorMessage = "Se requiere una contraseña.")]
         public string ConfirmarContraseña { get; set; } = null!;
 
         [Required(ErrorMessage = "Se requiere un nombre.")]

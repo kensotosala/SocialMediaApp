@@ -62,7 +62,8 @@ namespace SocialMediaApp.Presentacion.Controllers
                     {
                         Nombre = userDto.Nombre,
                         Email = userDto.Email,
-                        AutenticacionExternal = false
+                        AutenticacionExternal = false,
+                        NombreUsuario = userDto.NombreUsuario
                     });
 
                     return RedirectToAction("Index", "Home");
@@ -82,7 +83,8 @@ namespace SocialMediaApp.Presentacion.Controllers
         {
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.NameIdentifier, user.Nombre)
+                new Claim(ClaimTypes.NameIdentifier, user.Nombre),
+                new Claim("UserName", user.NombreUsuario)
             };
 
             var claimIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
@@ -138,6 +140,60 @@ namespace SocialMediaApp.Presentacion.Controllers
                 }        
             }
             return RedirectToAction("Register", "Auth");
+        }
+
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> ChangePassword(ProfileViewModel profile)
+        {
+            if (ModelState.IsValid)
+            {
+                var loginRequest = new LoginRequest()
+                {
+                    Username = User.FindFirst("UserName")?.Value,
+                    Password = profile.password
+                };
+
+                string url = "http://localhost:5142/api/APIAuth/Login";
+
+                var response = await _httpClient.PostAsJsonAsync(url, loginRequest);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    url = "http://localhost:5142/api/APIAuth/ChangePassword";
+
+                    loginRequest.Password = profile.newPassword;
+
+                    string jsonData = JsonConvert.SerializeObject(loginRequest);
+
+                    HttpContent content = new StringContent(jsonData, Encoding.UTF8, "application/Json");
+
+                    response = await _httpClient.PutAsync(url, content);
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        TempData["Mensaje"] = $"Cambiaste tu contraseña.";
+                        TempData["TipoMensaje"] = "alert-primary";
+                    }
+                    else
+                    {
+                        var errorResponse = await response.Content.ReadFromJsonAsync<ApiErrorResponse>();
+
+                        TempData["Mensaje"] = "No se pudo cambiar la contraseña";
+                        TempData["TipoMensaje"] = "alert-danger";
+                    }
+
+                    return RedirectToAction("Index", "Home");
+                }
+                else
+                {
+                    var errorResponse = await response.Content.ReadFromJsonAsync<ApiErrorResponse>();
+
+                    TempData["Mensaje"] = errorResponse.Message + " " + errorResponse.Details;
+                    TempData["TipoMensaje"] = "alert-danger";
+                }
+            }
+            return RedirectToAction("Profile", "Auth");
         }
 
         public async Task<IActionResult> Logout(string username, string password)

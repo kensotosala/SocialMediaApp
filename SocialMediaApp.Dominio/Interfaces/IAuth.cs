@@ -15,5 +15,7 @@ namespace SocialMediaApp.Dominio.Interfaces
 
         public Task<Usuario?> getByEmail(string email);
 
+        public Task<int> ChangePassword(Usuario user);
+
     }
 }

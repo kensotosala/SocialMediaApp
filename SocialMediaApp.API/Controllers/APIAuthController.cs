@@ -139,8 +139,21 @@ namespace SocialMediaApp.API.Controllers
                     });
                 }
             }
-
         }
 
+        [HttpPut]
+        [Route("ChangePassword")]
+        public async Task<ActionResult> ChangePassword([FromBody] SocialMediaApp.Persistencia.Data.LoginRequest loginRequest)
+        {
+            Usuario newUser = new Usuario();
+
+            newUser.NombreUsuario = loginRequest.Username;
+
+            newUser.Contraseña = _authService.CreateHashPassword(loginRequest.Password, out string salt);
+
+            newUser.SalContraseña = salt;
+
+            return Ok(new { resultado = await _authRep.ChangePassword(newUser) });
+        }
     }
 }

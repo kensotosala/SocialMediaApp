@@ -32,5 +32,19 @@ namespace SocialMediaApp.Persistencia.Repositorios
             return _context.Usuarios
                     .FirstOrDefaultAsync(u => u.Email == email);
         }
+
+        public async Task<int> ChangePassword(Usuario userUpdate)
+        {
+            var existingUser = await _context.Usuarios
+                .FirstOrDefaultAsync(u => u.NombreUsuario == userUpdate.NombreUsuario);
+
+            if (existingUser == null)
+                throw new KeyNotFoundException("Usuario no encontrado");
+
+            _context.Entry(existingUser).Property(u => u.Contraseña).CurrentValue = userUpdate.Contraseña;
+            _context.Entry(existingUser).Property(u => u.SalContraseña).CurrentValue = userUpdate.SalContraseña;
+
+            return await _context.SaveChangesAsync();
+        }
     }
 }
