@@ -16,9 +16,5 @@ namespace SocialMediaApp.Dominio.DTO
         public int? UsuarioId { get; set; }
 
         public string? Confirmacion { get; set; }
-
-        public virtual Evento? Evento { get; set; }
-
-        public virtual Usuario? Usuario { get; set; }
     }
 }

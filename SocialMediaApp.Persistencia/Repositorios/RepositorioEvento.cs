@@ -1,7 +1,6 @@
-﻿using SocialMediaApp.Dominio.Interfaces;
+﻿using Microsoft.EntityFrameworkCore;
+using SocialMediaApp.Dominio.Interfaces;
 using SocialMediaApp.Persistencia.Data;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 
 namespace SocialMediaApp.Persistencia.Repositorios
 {
@@ -122,5 +121,13 @@ namespace SocialMediaApp.Persistencia.Repositorios
             }
         }
 
+        public async Task<int> ObtenerUltimoEventoId()
+        {
+            int response = await _context.Eventos.OrderByDescending(e => e.EventoId)
+                .Select(e => e.EventoId)
+                .FirstOrDefaultAsync();
+
+            return response;
+        }
     }
 }

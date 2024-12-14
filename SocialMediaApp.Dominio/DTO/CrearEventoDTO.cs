@@ -1,17 +1,25 @@
-﻿namespace SocialMediaApp.Dominio.DTO
+﻿using System.Text.Json.Serialization;
+
+namespace SocialMediaApp.Dominio.DTO
 {
     public class CrearEventoDTO
     {
+        [JsonPropertyName("usuarioId")]
         public int? UsuarioId { get; set; }
 
-        public string Titulo { get; set; } = null!;
+        [JsonPropertyName("titulo")]
+        public string Titulo { get; set; }
 
-        public string? Descripcion { get; set; }
+        [JsonPropertyName("descripcion")]
+        public string Descripcion { get; set; }
 
-        public DateTime? FechaEvento { get; set; }
+        [JsonPropertyName("fechaEvento")]
+        public DateTime FechaEvento { get; set; }
 
-        public string? Ubicacion { get; set; }
+        [JsonPropertyName("ubicacion")]
+        public string Ubicacion { get; set; }
 
-        public DateTime? FechaCreacion { get; set; }
+        [JsonPropertyName("usuarioIds")]
+        public List<int> UsuarioIds { get; set; } = new List<int>();
     }
 }

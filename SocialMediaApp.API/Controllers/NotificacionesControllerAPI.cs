@@ -51,6 +51,7 @@ namespace SocialMediaApp.API.Controllers
         {
             return Ok(new { resultado = await _repNotificaciones.insertar(notificacion) });
         }
+
         // Obtener una notificación específica por ID
         [HttpGet("ObtenerPorId/{id}")]
         public async Task<ActionResult> ObtenerPorId(int id)
@@ -67,8 +68,5 @@ namespace SocialMediaApp.API.Controllers
             // Devuelve la notificación como respuesta
             return Ok(notificacion);
         }
-
-
-
     }
 }

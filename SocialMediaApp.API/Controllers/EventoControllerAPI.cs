@@ -12,11 +12,13 @@ namespace SocialMediaApp.API.Controllers
     {
         private readonly IEvento _repEvento;
         private readonly INotificaciones _repNotificacion;
+        private readonly IInvitadosEvento _repInvEvento;
 
-        public EventoControllerAPI(IEvento repEvento, INotificaciones repNotificacion)
+        public EventoControllerAPI(IEvento repEvento, INotificaciones repNotificacion, IInvitadosEvento repInvEvento)
         {
             _repEvento = repEvento;
             _repNotificacion = repNotificacion;
+            _repInvEvento = repInvEvento;
         }
 
         // Obtiene los eventos de un usuario autenticado
@@ -41,39 +43,106 @@ namespace SocialMediaApp.API.Controllers
             return Content(jsonRes, "application/json");
         }
 
-        // Endpoint para crear un evento
+        /*
+        ENDPOINT PARA CREAR UN EVENTO
+         */
+
         [HttpPost("crear")]
         public async Task<IActionResult> CrearEvento([FromBody] CrearEventoDTO eventoDTO)
         {
-            var evento = new Evento
+            try
             {
-                UsuarioId = eventoDTO.UsuarioId ?? 1,
-                Titulo = eventoDTO.Titulo,
-                Descripcion = eventoDTO.Descripcion,
-                FechaEvento = eventoDTO.FechaEvento,
-                Ubicacion = eventoDTO.Ubicacion,
-                FechaCreacion = DateTime.Now
-            };
+                // More comprehensive validation
+                if (eventoDTO == null)
+                {
+                    return BadRequest(new { errors = "Los datos del evento no pueden ser nulos" });
+                }
 
-            await _repEvento.AgregarEventoAsync(evento);
+                // Detailed validation with specific error messages
+                var validationErrors = new List<string>();
 
-            // Crear la notificación para el usuario asociado al evento (por ejemplo, el creador)
-            var notificacion = new Notificacione
+                if (string.IsNullOrWhiteSpace(eventoDTO.Titulo))
+                    validationErrors.Add("El título del evento es obligatorio");
+
+                if (string.IsNullOrWhiteSpace(eventoDTO.Descripcion))
+                    validationErrors.Add("La descripción del evento es obligatoria");
+
+                if (eventoDTO.FechaEvento == default)
+                    validationErrors.Add("La fecha del evento no es válida");
+
+                if (string.IsNullOrWhiteSpace(eventoDTO.Ubicacion))
+                    validationErrors.Add("La ubicación del evento es obligatoria");
+
+                // If there are validation errors, return them
+                if (validationErrors.Any())
+                {
+                    return BadRequest(new { errors = validationErrors });
+                }
+
+                // Create the event
+                var evento = new Evento
+                {
+                    UsuarioId = eventoDTO.UsuarioId ?? 1, // Default user ID
+                    Titulo = eventoDTO.Titulo,
+                    Descripcion = eventoDTO.Descripcion,
+                    FechaEvento = eventoDTO.FechaEvento,
+                    Ubicacion = eventoDTO.Ubicacion,
+                    FechaCreacion = DateTime.Now
+                };
+
+                // Save the event
+                await _repEvento.AgregarEventoAsync(evento);
+
+                // Create notification for event creator
+                var notificacion = new Notificacione
+                {
+                    UsuarioId = evento.UsuarioId,
+                    Tipo = "Evento",
+                    Descripcion = $"Has creado un nuevo evento: {evento.Titulo}",
+                    Fecha = DateTime.Now,
+                    EsLeida = false
+                };
+                await _repNotificacion.insertar(notificacion);
+
+                int ultimoEventoId = await _repEvento.ObtenerUltimoEventoId();
+
+                // Invite users and create notifications
+                if (eventoDTO.UsuarioIds != null && eventoDTO.UsuarioIds.Any())
+                {
+                    foreach (var usuarioId in eventoDTO.UsuarioIds)
+                    {
+                        // Invite user to the event
+                        await _repInvEvento.InvitarUsuarioAsync(ultimoEventoId, usuarioId);
+
+                        // Create invitation notification for each invited user
+                        var invitacionNotificacion = new Notificacione
+                        {
+                            UsuarioId = usuarioId,
+                            Tipo = "Invitación a Evento",
+                            Descripcion = $"Has sido invitado al evento: {evento.Titulo}",
+                            Fecha = DateTime.Now,
+                            EsLeida = false
+                        };
+                        await _repNotificacion.insertar(invitacionNotificacion);
+                    }
+                }
+
+                // Return the created event
+                return CreatedAtAction(nameof(ObtenerEvento), new { id = evento.EventoId }, evento);
+            }
+            catch (Exception ex)
             {
-                UsuarioId = eventoDTO.UsuarioId,  // Notificar al usuario que creó el evento
-                Tipo = "Evento",  // Tipo de notificación
-                Descripcion = $"Has creado un nuevo evento: {evento.Titulo}",  // Descripción de la notificación
-                Fecha = DateTime.Now,  // Fecha actual
-                EsLeida = false  // Estado de la notificación (no leída)
-            };
+                // Log the exception (use your logging framework)
+                // _logger.LogError(ex, "Error creating event");
 
-            // Guardar la notificación para el usuario
-            await _repNotificacion.insertar(notificacion);
-
-            return CreatedAtAction(nameof(ObtenerEvento), new { id = evento.EventoId }, evento);
+                return StatusCode(500, new
+                {
+                    errors = "Error interno al crear el evento",
+                    details = ex.Message
+                });
+            }
         }
 
-        // Obtiene un evento específico
         [HttpGet("ObtenerEventosPorID")]
         public async Task<IActionResult> ObtenerEvento(int eventoId)
         {
@@ -85,8 +154,7 @@ namespace SocialMediaApp.API.Controllers
             return Ok(evento);
         }
 
-        // Modifica un evento existente
-        [HttpPut("ModificarXID")]
+        [HttpPut("ModificarInvEventoXID")]
         public async Task<IActionResult> ModificarEvento(int eventoId, [FromBody] Evento evento)
         {
             if (eventoId != evento.EventoId)
@@ -99,14 +167,11 @@ namespace SocialMediaApp.API.Controllers
         }
 
         // Elimina un evento
-        [HttpDelete("EliminarXID")]
+        [HttpDelete("EliminarEventoXID")]
         public async Task<IActionResult> EliminarEvento(int eventoId)
         {
             await _repEvento.EliminarEventoAsync(eventoId);
             return NoContent();
         }
-
-       
-
     }
 }

@@ -1,10 +1,6 @@
-﻿using SocialMediaApp.Dominio.Interfaces;
+﻿using Microsoft.EntityFrameworkCore;
+using SocialMediaApp.Dominio.Interfaces;
 using SocialMediaApp.Persistencia.Data;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 
 namespace SocialMediaApp.Persistencia.Repositorios
 {
@@ -15,6 +11,11 @@ namespace SocialMediaApp.Persistencia.Repositorios
         public RepositorioInvitarEvento(SocialMediaDBContext context)
         {
             _context = context;
+        }
+
+        public async Task<List<InvitadosEvento>> ListarInvitadosAEvento()
+        {
+            return await _context.InvitadosEventos.ToListAsync();
         }
 
         public async Task InvitarUsuarioAsync(int eventoId, int usuarioId)
@@ -59,7 +60,7 @@ namespace SocialMediaApp.Persistencia.Repositorios
         public async Task<InvitadosEvento?> ObtenerInvitacionPorIdAsync(int invitacionId)
         {
             return await _context.InvitadosEventos
-                .Include(i => i.Usuario) // Incluye información del usuario invitado
+                .Include(i => i.Usuario)
                 .FirstOrDefaultAsync(i => i.InvitadoId == invitacionId);
         }
 

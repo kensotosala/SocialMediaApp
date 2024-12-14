@@ -13,7 +13,7 @@ namespace SocialMediaApp.Dominio.Interfaces
         Task ModificarEventoAsync(Evento evento);
 
         Task EliminarEventoAsync(int eventoId);
-        
 
+        Task<int> ObtenerUltimoEventoId();
     }
 }

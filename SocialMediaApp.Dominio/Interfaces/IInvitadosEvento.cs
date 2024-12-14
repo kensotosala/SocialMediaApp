@@ -1,31 +1,19 @@
 ﻿using SocialMediaApp.Persistencia.Data;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SocialMediaApp.Dominio.Interfaces
 {
-    
-        public interface IInvitadosEvento
-        {
-            
-            Task InvitarUsuarioAsync(int eventoId, int usuarioId);
+    public interface IInvitadosEvento
+    {
+        Task InvitarUsuarioAsync(int eventoId, int usuarioId);
 
-            // Obtiene la lista de todos los invitados a un evento
-            Task<List<InvitadosEvento>> ObtenerInvitadosPorEventoAsync(int eventoId);
+        Task<List<InvitadosEvento>> ListarInvitadosAEvento();
 
-            // Obtiene la información de un invitado por ID de invitación
-            Task<InvitadosEvento?> ObtenerInvitacionPorIdAsync(int invitacionId);
+        Task<List<InvitadosEvento>> ObtenerInvitadosPorEventoAsync(int eventoId);
 
-            // Elimina una invitación por ID
-            Task EliminarInvitacionAsync(int invitacionId);
+        Task<InvitadosEvento?> ObtenerInvitacionPorIdAsync(int invitacionId);
 
-            // Modifica el estado de una invitación
-            Task ModificarEstadoInvitacionAsync(int invitacionId, string nuevoEstado);
+        Task EliminarInvitacionAsync(int invitacionId);
 
-        }
-        
-    
+        Task ModificarEstadoInvitacionAsync(int invitacionId, string nuevoEstado);
+    }
 }

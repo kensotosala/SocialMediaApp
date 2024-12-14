@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using SocialMediaApp.Dominio.DTO;
 using SocialMediaApp.Dominio.Interfaces;
 
@@ -15,18 +16,40 @@ namespace SocialMediaApp.API.Controllers
             _repInvitadoEvento = repInvitadoEvento;
         }
 
+        // Listar Eventos
+        [HttpGet("ListarInvitadoEvento")]
+        public async Task<ActionResult> ListarInvitadoEvento()
+        {
+            var resultado = await _repInvitadoEvento.ListarInvitadosAEvento();
+
+            var objDTO = resultado.Select(n => new InvitacionEventoDTO
+            {
+                InvitadoId = n.InvitadoId,
+                EventoId = n.EventoId,
+                UsuarioId = n.UsuarioId,
+                Confirmacion = n.Confirmacion,
+            }).ToList();
+
+            var jsonRes = JsonConvert.SerializeObject(objDTO);
+
+            return Content(jsonRes, "application/json");
+        }
+
         // Invitar a un usuario a un evento
         [HttpPost("InvitarUsuario")]
-        public async Task<IActionResult> InvitarUsuario([FromBody] InvitarUsuarioDTO invitacionDto)
+        public async Task<IActionResult> InvitarUsuario([FromBody] InvitarUsuarioDTO invitarUsuarioDTO)
         {
             try
             {
-                if (invitacionDto.EventoId == null || invitacionDto.UsuarioId == null)
+                // Validar que EventoId y UsuarioId son requeridos
+                if (invitarUsuarioDTO.EventoId == null || invitarUsuarioDTO.UsuarioId == null)
                 {
                     return BadRequest(new { message = "EventoId y UsuarioId son requeridos." });
                 }
 
-                await _repInvitadoEvento.InvitarUsuarioAsync(invitacionDto.EventoId.Value, invitacionDto.UsuarioId.Value);
+                // Llamar al método de lógica de negocio para invitar al usuario
+                await _repInvitadoEvento.InvitarUsuarioAsync(invitarUsuarioDTO.EventoId.Value, invitarUsuarioDTO.UsuarioId.Value);
+
                 return Ok(new { message = "Usuario invitado exitosamente." });
             }
             catch (Exception ex)
@@ -45,8 +68,6 @@ namespace SocialMediaApp.API.Controllers
                 EventoId = invitado.EventoId,
                 UsuarioId = invitado.UsuarioId,
                 Confirmacion = invitado.Confirmacion,
-                Evento = invitado.Evento,
-                Usuario = invitado.Usuario
             }).ToList();
 
             return Ok(invitadosDto);
@@ -67,8 +88,6 @@ namespace SocialMediaApp.API.Controllers
                 EventoId = invitacion.EventoId,
                 UsuarioId = invitacion.UsuarioId,
                 Confirmacion = invitacion.Confirmacion,
-                Evento = invitacion.Evento,
-                Usuario = invitacion.Usuario
             };
 
             return Ok(invitacionDto);
