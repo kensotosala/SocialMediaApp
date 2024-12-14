@@ -63,14 +63,16 @@ namespace SocialMediaApp.API.Controllers
         public async Task<ActionResult> ObtenerInvitados(int eventoId)
         {
             var invitados = await _repInvitadoEvento.ObtenerInvitadosPorEventoAsync(eventoId);
-            var invitadosDto = invitados.Select(invitado => new InvitarUsuarioDTO
+            var invitadosDTO = invitados.Select(invitado => new InvitarUsuarioDTO
             {
                 EventoId = invitado.EventoId,
                 UsuarioId = invitado.UsuarioId,
                 Confirmacion = invitado.Confirmacion,
             }).ToList();
 
-            return Ok(invitadosDto);
+            var jsonRes = JsonConvert.SerializeObject(invitadosDTO);
+
+            return Content(jsonRes, "application/json");
         }
 
         // Obtener una invitación específica

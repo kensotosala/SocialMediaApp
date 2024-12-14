@@ -71,15 +71,45 @@ async function cargarEventos() {
     }
 }
 
-// Función para abrir el modal de eventos
 function openEventModal(evento) {
-    const { Titulo, Descripcion, FechaEvento, Ubicacion } = evento;
+    const { Titulo, Descripcion, FechaEvento, Ubicacion, EventoId } = evento;
 
     document.getElementById('eventTitle').textContent = Titulo || 'Sin título';
     document.getElementById('eventDescription').textContent = Descripcion || 'Sin descripción';
     document.getElementById('eventDate').textContent = new Date(FechaEvento).toLocaleString();
     document.getElementById('eventLocation').textContent = Ubicacion || 'Sin ubicación';
 
+    // Limpiar la lista de usuarios invitados antes de llenarla
+    const listaUsuarios = document.getElementById('invitedUserList');
+    listaUsuarios.innerHTML = '';
+
+    // Hacer la solicitud para obtener los usuarios invitados
+    fetch(`http://localhost:5142/api/InvitarEventoControllerAPI/ObtenerInvitados/${EventoId}`)
+        .then(response => response.json())  // Convertir la respuesta en formato JSON
+        .then(usuariosInvitados => {
+            // Verificar si hay usuarios invitados
+            if (usuariosInvitados && usuariosInvitados.length > 0) {
+                // Iterar sobre la lista de usuarios invitados y agregarlos al modal
+                usuariosInvitados.forEach(usuario => {
+                    const li = document.createElement('li');
+                    li.textContent = `Usuario ID: ${usuario.UsuarioId} - Confirmación: ${usuario.Confirmacion || 'No disponible'}`;
+                    listaUsuarios.appendChild(li);
+                });
+            } else {
+                // Si no hay usuarios invitados, mostrar mensaje
+                const li = document.createElement('li');
+                li.textContent = 'No hay usuarios invitados.';
+                listaUsuarios.appendChild(li);
+            }
+        })
+        .catch(error => {
+            console.error('Error al obtener los usuarios invitados:', error);
+            const li = document.createElement('li');
+            li.textContent = 'Error al cargar los usuarios invitados.';
+            listaUsuarios.appendChild(li);
+        });
+
+    // Mostrar el modal
     const modal = new bootstrap.Modal(document.getElementById('eventModal'));
     modal.show();
 }
