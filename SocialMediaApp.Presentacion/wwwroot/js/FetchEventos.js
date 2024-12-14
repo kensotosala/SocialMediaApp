@@ -45,7 +45,7 @@ async function cargarEventos() {
 
                 const li = document.createElement('li');
                 li.innerHTML = `
-                    <a href="#" class="dropdown-item ${itemClass}" data-index="${index}" data-bs-toggle="modal" data-bs-target="#notificationModal">
+                    <a href="#" class="dropdown-item ${itemClass}" data-index="${index}">
                         <strong>${Titulo}</strong>
                         <button type="button" class="btn btn-sm btn-primary ms-2">✏</button>
                         <p class="mb-0 text-muted">${Descripcion || 'No description'}</p>
@@ -54,6 +54,12 @@ async function cargarEventos() {
                     </a>
                 `;
                 dropdownMenu.appendChild(li);
+
+                // Agregar el evento de clic para abrir el modal
+                li.querySelector('a').addEventListener('click', (event) => {
+                    event.preventDefault();
+                    openEventModal(evento);
+                });
             });
         }
     } catch (error) {
@@ -63,6 +69,19 @@ async function cargarEventos() {
             <li><span class="dropdown-item text-danger">Error al cargar los eventos</span></li>
         `;
     }
+}
+
+// Función para abrir el modal de eventos
+function openEventModal(evento) {
+    const { Titulo, Descripcion, FechaEvento, Ubicacion } = evento;
+
+    document.getElementById('eventTitle').textContent = Titulo || 'Sin título';
+    document.getElementById('eventDescription').textContent = Descripcion || 'Sin descripción';
+    document.getElementById('eventDate').textContent = new Date(FechaEvento).toLocaleString();
+    document.getElementById('eventLocation').textContent = Ubicacion || 'Sin ubicación';
+
+    const modal = new bootstrap.Modal(document.getElementById('eventModal'));
+    modal.show();
 }
 
 // Ejecutar la función al cargar la página
