@@ -1,4 +1,17 @@
-﻿<!DOCTYPE html>
+﻿@model SocialMediaApp.Dominio.ViewModels.ProfileViewModel
+
+@{
+    ViewData["Title"] = "Iniciar Sesión";
+}
+
+@if (TempData["Mensaje"] != null)
+{
+    <div class="alert @TempData["TipoMensaje"]" role="alert">
+        @TempData["Mensaje"]
+    </div>
+}
+
+<!DOCTYPE html>
 <html lang="es">
 
 <head>
@@ -366,7 +379,6 @@
             </div>
         </div>
 
-        <form class="profile-form">
             <div class="form-group">
                 <label class="form-label" for="nombre">Nombre completo</label>
                 <input type="text" id="nombre" class="form-control" placeholder="Tu nombre completo">
@@ -403,27 +415,77 @@
                 <div class="interests-container" id="interests-container"></div>
             </div>
 
+        @if (User.Claims.FirstOrDefault(c => c.Type == "ExternalLogin")?.Value == "1")
+        {
 
-            <div class="password-section">
-                <h2 class="profile-title">Cambiar contraseña</h2>
-                <div class="form-group">
-                    <label class="form-label" for="current-password">Contraseña actual</label>
-                    <input type="password" id="current-password" class="form-control">
+            <fieldset disabled>
+                <form asp-action="" method="post">
+
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                    <div class="form-row">
+                        <h2 class="profile-title">Cambiar contraseña</h2>
+                        <h4 class="text-danger"> Debes gestionar tu contraseña en tu cuenta de Google.</h4>
+
+                        <div class="form-group">
+                            <label asp-for="password">Contraseña:</label>
+                            <input type="password" asp-for="password" class="form-control" placeholder="Contraseña actual">
+                            <span asp-validation-for="password" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="newPassword">Nueva contraseña:</label>
+                            <input type="password" asp-for="newPassword" class="form-control" placeholder="Nueva contraseña">
+                            <span asp-validation-for="newPassword" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="confirmPassword">Confirmar Contraseña:</label>
+                            <input type="password" asp-for="confirmPassword" class="form-control" placeholder="Confirmar nueva contraseña">
+                            <span asp-validation-for="confirmPassword" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" disabled>Guardar cambios</button>
+                </form>
+            </fieldset>
+        }
+        else
+        {
+            <form asp-controller="Auth" asp-action="ChangePassword" method="post">
+                <div class="form-header">
+                    <h2 class="profile-title">Cambiar contraseña</h2>
                 </div>
 
-                <div class="form-group">
-                    <label class="form-label" for="new-password">Nueva contraseña</label>
-                    <input type="password" id="new-password" class="form-control">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <div class="form-row">
+
+                    <div class="form-group">
+                        <label asp-for="password">Contraseña:</label>
+                        <input type="password" asp-for="password" class="form-control" placeholder="Contraseña">
+                        <span asp-validation-for="password" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="newPassword">Nueva contraseña:</label>
+                        <input type="password" asp-for="newPassword" class="form-control" placeholder="Nueva contraseña">
+                        <span asp-validation-for="newPassword" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="confirmPassword">Confirmar Contraseña:</label>
+                        <input type="password" asp-for="confirmPassword" class="form-control" placeholder="Confirmar contraseña">
+                        <span asp-validation-for="confirmPassword" class="text-danger"></span>
+                    </div>
+
                 </div>
 
-                <div class="form-group">
-                    <label class="form-label" for="confirm-password">Confirmar nueva contraseña</label>
-                    <input type="password" id="confirm-password" class="form-control">
-                </div>
-            </div>
+                <button type="submit" class="btn btn-primary">Guardar cambios</button>
 
-            <button type="submit" class="btn-save">Guardar cambios</button>
-        </form>
+            </form>
+        }
+
     </div>
 
     <script>
@@ -681,3 +743,9 @@
     </script>
 </body>
 </html>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
