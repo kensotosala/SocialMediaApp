@@ -9,8 +9,8 @@ async function cargarEventos() {
     // Asegúrate de agregar el botón "Nuevo Evento" primero
     if (!document.getElementById("nuevoEventoButton")) {
         const nuevoEventoButton = document.createElement('li');
-        nuevoEventoButton.innerHTML = `
-            <button type="button" class="btn btn-lg btn-primary w-100" data-bs-toggle="modal" data-bs-target="#eventFormModal" id="nuevoEventoButton">Nuevo Evento</button>`;
+        nuevoEventoButton.innerHTML = ` 
+            <button type="button" class="btn btn-lg custom-button w-100" data-bs-toggle="modal" data-bs-target="#eventFormModal" id="nuevoEventoButton">Nuevo Evento</button>`;
         dropdownMenu.appendChild(nuevoEventoButton);
 
         // Lógica para el evento del botón "Nuevo Evento"
@@ -46,11 +46,12 @@ async function cargarEventos() {
                 const li = document.createElement('li');
                 li.innerHTML = `
                     <a href="#" class="dropdown-item ${itemClass}" data-index="${index}">
-                        <strong>${Titulo}</strong>
-                        <button type="button" class="btn btn-sm btn-primary ms-2">✏</button>
-                        <p class="mb-0 text-muted">${Descripcion || 'No description'}</p>
-                        <small class="text-muted">${Ubicacion}</small>
-                        <br><small>${new Date(FechaEvento).toLocaleString()}</small>
+                        <div class="d-flex align-items-center">
+                        <button type="button" class="btn btn-sm custom-button2 me-2">✏</button>
+                        <div> <strong>${Titulo}</strong>
+                        <p class="mb-0 text-muted">${Descripcion || 'No description'}</p> 
+                        <small class="text-muted">${Ubicacion}</small> 
+                        <br><small>${new Date(FechaEvento).toLocaleString()}</small> </div> </div>
                     </a>
                 `;
                 dropdownMenu.appendChild(li);

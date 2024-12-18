@@ -18,5 +18,99 @@ html {
 }
 
 body {
-  margin-bottom: 60px;
+    margin-bottom: 60px;
+    /*font-family: 'Arial', sans-serif;*/ /* Establecer la fuente predeterminada */
+}
+
+.navbar{
+    font-family: 'Arial', sans-serif; /* O la fuente que prefieras */
+}
+
+.custom-navbar {
+    background-color: #ffd140; /*Colores del Navbar*/
+}
+
+.custom-spacing {
+    margin-right: 10px; /* Ajusta el valor según sea necesario */
+    margin-left: 5px;
+}
+
+.nav-link, .btn {
+    font-size: 1.25rem; /* Ajusta el valor según sea necesario */
+}
+
+.custom-font {
+    font-family: 'Arial', sans-serif; /* O la fuente que prefieras */
+}
+
+/* Estilo para los botones de Notificaciones y Eventos */
+.custom-button {
+    background-color: #1d1d26;
+    color: white; /* Color del texto */
+    border: none; /* Sin borde */
+    padding-bottom: 8px;
+    padding-top: 8px;
+    border-radius: 3.5px; /*Esquinas*/
+}
+.custom-button:hover, .custom-button:focus, .custom-button:active, .custom-button.show 
+{
+    background-color: #000000;
+    color: white; /* Color del texto al pasar el mouse */
+
+}
+.custom-button:focus {
+    outline: none; /* Elimina el borde de enfoque */
+    box-shadow: none; /* Elimina la sombra de enfoque */
+}
+
+/* Estilo para los botones de Notificaciones y Eventos */
+.custom-button2 {
+    background-color: #1d1d26;
+    color: white; /* Color del texto */
+    border-radius: 5px; /* Esquinas */
+    border: none; /* Sin borde */
+}
+
+    .custom-button2:hover, .custom-button2:focus, .custom-button2:active, .custom-button2.show {
+        background-color: #000000;
+        color: white; /* Color del texto al pasar el mouse */
+    }
+
+    .custom-button2:focus {
+        outline: none; /* Elimina el borde de enfoque */
+        box-shadow: none; /* Elimina la sombra de enfoque */
+    }
+
+/* Estilo personalizado para el badge de notificaciones */
+.custom-badge {
+    padding: 6px 8px;
+}
+
+.dropdown-menu {
+    padding: 2px;
+}
+
+/* Estilo para los elementos del dropdown */
+.dropdown-item {
+    font-family: 'Arial', sans-serif; /* Tipo de fuente */
+    border-bottom: 0.5px solid #000000; /* Agrega una línea divisoria */
+    color: #000000; /* Color del texto */
+    background-color: #d1daec; /* Color de fondo */
+}
+
+.dropdown-item:hover {
+    background-color: #e3e9f3; /* Cambia el color de fondo al pasar el mouse */
+    color: #000000; /* Color del texto al pasar el mouse */
+}
+
+.text-primary {
+    color: #000000 !important; 
+}
+
+.text-muted {
+    color: #000000 !important; 
+}
+
+.fw-bold {
+    font-weight: bold; 
 }

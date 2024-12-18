@@ -24,7 +24,7 @@ async function loadNotifications() {
             const li = document.createElement('li');
             li.innerHTML = `
                 <div class="d-flex align-items-center ${itemClass}">
-                    <a href="#" class="dropdown-item flex-grow-1" data-index="${index}" data-bs-toggle="modal" data-bs-target="#notificationModal">
+                    <a href="#" class="dropdown-item flex-grow-1 custom-font" data-index="${index}" data-bs-toggle="modal" data-bs-target="#notificationModal">
                         <small class="text-muted">${Descripcion || 'No description'}</small>
                         <br><small>${new Date(Fecha).toLocaleString()}</small>
                     </a>
