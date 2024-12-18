@@ -24,4 +24,11 @@
     <ProjectReference Include="..\SocialMediaApp.Persistencia\SocialMediaApp.Persistencia.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Update="Views\Auth\ForgotPassword.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+
 </Project>

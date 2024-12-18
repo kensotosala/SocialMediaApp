@@ -19,6 +19,58 @@ namespace SocialMediaApp.API.Controllers
             _authService = authService;
         }
 
+
+        [HttpPut]
+        [Route("ForgotPassword")]
+        public async Task<IActionResult> ForgotPassword([FromBody] SocialMediaApp.Persistencia.Data.ForgotPasswordRequest forgotPassRequest)
+        {
+            var userEmail = await _authRep.getByEmail(forgotPassRequest.Email);
+
+            if (userEmail != null) 
+            {
+                if ((userEmail.AutenticacionExternal == true))
+                {
+                    return BadRequest(new
+                    {
+                        Message = "No se pudo recuperar la contraseña.",
+                        Details = "Debes recuperar tu contraseña en tu cuenta de Google.."
+                    });
+                }
+            }
+
+            var usernameUser = await _authRep.getByUsername(forgotPassRequest.Username);
+
+            if (usernameUser != null)
+            {
+                if (usernameUser.Email.Equals(forgotPassRequest.Email))
+                {
+                    var newUnhashedPw = GenerateSecurePassword();
+
+                    usernameUser.Contraseña = _authService.CreateHashPassword(newUnhashedPw, out string salt);
+
+                    usernameUser.SalContraseña = salt;
+
+                    var resultado = await _authRep.ChangePassword(usernameUser);
+
+                    if (resultado == 1)
+                    {
+                        return Ok(new
+                        {
+                            Message = newUnhashedPw,
+                            Details = "Recuperación de contraseña exitosa"
+
+                        });
+                    }
+                }
+            }
+
+            return BadRequest(new
+            {
+                Message = "No se pudo recuperar la contraseña.",
+                Details = "Revise los datos ingresados."
+            });
+        }
+
         // POST api/<APIAuthController>
         [HttpPost]
         [Route("Register")]
@@ -154,6 +206,35 @@ namespace SocialMediaApp.API.Controllers
             newUser.SalContraseña = salt;
 
             return Ok(new { resultado = await _authRep.ChangePassword(newUser) });
+        }
+        public static string GenerateSecurePassword()
+        {
+            const string upperCase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            const string lowerCase = "abcdefghijklmnopqrstuvwxyz";
+            const string numbers = "0123456789";
+            const string symbols = "!@#$%^&*()_+-=[]{}|;:,.<>?";
+
+            var random = Random.Shared; 
+            var password = new char[16];
+
+            password[0] = upperCase[random.Next(upperCase.Length)];
+            password[1] = lowerCase[random.Next(lowerCase.Length)];
+            password[2] = numbers[random.Next(numbers.Length)];
+            password[3] = symbols[random.Next(symbols.Length)];
+
+            string allChars = upperCase + lowerCase + numbers + symbols;
+            for (int i = 4; i < 16; i++)
+            {
+                password[i] = allChars[random.Next(allChars.Length)];
+            }
+
+            for (int i = password.Length - 1; i > 0; i--)
+            {
+                int j = random.Next(i + 1);
+                (password[j], password[i]) = (password[i], password[j]);
+            }
+
+            return new string(password);
         }
     }
 }

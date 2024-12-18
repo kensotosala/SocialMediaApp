@@ -8,6 +8,7 @@ using SocialMediaApp.Dominio.ViewModels;
 using SocialMediaApp.Persistencia.Data;
 using System.Security.Claims;
 using System.Text;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace SocialMediaApp.Presentacion.Controllers
 {
@@ -55,7 +56,7 @@ namespace SocialMediaApp.Presentacion.Controllers
                 {
                     UsuarioDto userDto = await response.Content.ReadFromJsonAsync<UsuarioDto>();
 
-                    TempData["Mensaje"] = $"Bienvenido {userDto.Nombre}.";
+                    TempData["Mensaje"] = $"¡Te damos la bienvenida {userDto.Nombre}!";
                     TempData["TipoMensaje"] = "alert-primary";
 
                     await RegisterClaims(new UsuarioDto
@@ -95,6 +96,49 @@ namespace SocialMediaApp.Presentacion.Controllers
 
         [HttpGet]
         [AllowAnonymous]
+        public IActionResult ForgotPassword()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordRequest forgotPwRequest)
+        {
+            if (ModelState.IsValid)
+            {
+                string url = "http://localhost:5142/api/APIAuth/ForgotPassword";
+
+                string jsonData = JsonConvert.SerializeObject(forgotPwRequest);
+
+                HttpContent content = new StringContent(jsonData, Encoding.UTF8, "application/Json");
+
+                var response = await _httpClient.PutAsync(url, content);
+
+                    var errorResponse = await response.Content.ReadFromJsonAsync<ApiErrorResponse>();
+
+                    if (response.IsSuccessStatusCode)
+                    {                       
+                        TempData["Mensaje"] = $"Tu nueva contraseña es " + errorResponse.Message;
+                        TempData["TipoMensaje"] = "alert-primary";
+
+                        return RedirectToAction("Login", "Auth");
+                    }
+                    else
+                    {
+                        TempData["Mensaje"] = errorResponse.Message + " " + errorResponse.Details;
+                        TempData["TipoMensaje"] = "alert-danger";
+
+                        return RedirectToAction("ForgotPassword", "Auth");
+                    }               
+            }
+            return RedirectToAction("ForgotPassword", "Auth");
+        }
+
+
+        [HttpGet]
+        [AllowAnonymous]
         public ActionResult Register()
         {
             return View();
@@ -117,7 +161,7 @@ namespace SocialMediaApp.Presentacion.Controllers
 
                 if (response.IsSuccessStatusCode)
                 {
-                    TempData["Mensaje"] = $"Bienvenido {user.Nombre}.";
+                    TempData["Mensaje"] = $"¡Te damos la bienvenida {user.Nombre}!";
                     TempData["TipoMensaje"] = "alert-primary";
 
                     await RegisterClaims(new UsuarioDto
