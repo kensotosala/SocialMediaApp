@@ -17,5 +17,9 @@ namespace SocialMediaApp.Dominio.Interfaces
 
         public Task<int> ChangePassword(Usuario user);
 
+        public Task<int> ChangeQuestion(ChangeQuestionRequest changeQuestion);
+
+        public Task<int> ChangeProfile(Profile updates);
+
     }
 }

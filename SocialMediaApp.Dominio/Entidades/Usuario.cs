@@ -33,6 +33,10 @@ public partial class Usuario
 
     public bool? AutenticacionExternal { get; set; }
 
+    public string? Pregunta { get; set; }
+
+    public string? Respuesta { get; set; }
+
     public virtual ICollection<Amistade> AmistadeAmigos { get; set; } = new List<Amistade>();
 
     public virtual ICollection<Amistade> AmistadeUsuarios { get; set; } = new List<Amistade>();

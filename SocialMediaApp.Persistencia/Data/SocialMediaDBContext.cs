@@ -49,7 +49,7 @@ public partial class SocialMediaDBContext : DbContext
     {
         modelBuilder.Entity<Amistade>(entity =>
         {
-            entity.HasKey(e => e.AmistadId).HasName("PK__Amistade__8668448BD35FD1BB");
+            entity.HasKey(e => e.AmistadId).HasName("PK__Amistade__8668448B923279DA");
 
             entity.Property(e => e.AmistadId).HasColumnName("AmistadID");
             entity.Property(e => e.AmigoId).HasColumnName("AmigoID");
@@ -71,7 +71,7 @@ public partial class SocialMediaDBContext : DbContext
 
         modelBuilder.Entity<AutenticacionSocial>(entity =>
         {
-            entity.HasKey(e => e.AutenticacionId).HasName("PK__Autentic__3E8C6FA33F996853");
+            entity.HasKey(e => e.AutenticacionId).HasName("PK__Autentic__3E8C6FA3D990D1A1");
 
             entity.ToTable("AutenticacionSocial");
 
@@ -90,7 +90,7 @@ public partial class SocialMediaDBContext : DbContext
 
         modelBuilder.Entity<Comentario>(entity =>
         {
-            entity.HasKey(e => e.ComentarioId).HasName("PK__Comentar__F1844958F051413B");
+            entity.HasKey(e => e.ComentarioId).HasName("PK__Comentar__F1844958C7975BB4");
 
             entity.Property(e => e.ComentarioId).HasColumnName("ComentarioID");
             entity.Property(e => e.FechaComentario)
@@ -110,7 +110,7 @@ public partial class SocialMediaDBContext : DbContext
 
         modelBuilder.Entity<Evento>(entity =>
         {
-            entity.HasKey(e => e.EventoId).HasName("PK__Eventos__1EEB590194AF442E");
+            entity.HasKey(e => e.EventoId).HasName("PK__Eventos__1EEB590182D05824");
 
             entity.Property(e => e.EventoId).HasColumnName("EventoID");
             entity.Property(e => e.FechaCreacion)
@@ -128,7 +128,7 @@ public partial class SocialMediaDBContext : DbContext
 
         modelBuilder.Entity<InvitadosEvento>(entity =>
         {
-            entity.HasKey(e => e.InvitadoId).HasName("PK__Invitado__5144C194AC3FFF19");
+            entity.HasKey(e => e.InvitadoId).HasName("PK__Invitado__5144C1946C4DF122");
 
             entity.ToTable("InvitadosEvento");
 
@@ -148,7 +148,7 @@ public partial class SocialMediaDBContext : DbContext
 
         modelBuilder.Entity<Mensaje>(entity =>
         {
-            entity.HasKey(e => e.MensajeId).HasName("PK__Mensajes__FEA0557F42DF0FA5");
+            entity.HasKey(e => e.MensajeId).HasName("PK__Mensajes__FEA0557FD08946F7");
 
             entity.Property(e => e.MensajeId).HasColumnName("MensajeID");
             entity.Property(e => e.EmisorId).HasColumnName("EmisorID");
@@ -169,7 +169,7 @@ public partial class SocialMediaDBContext : DbContext
 
         modelBuilder.Entity<Notificacione>(entity =>
         {
-            entity.HasKey(e => e.NotificacionId).HasName("PK__Notifica__BCC120C45CCB3289");
+            entity.HasKey(e => e.NotificacionId).HasName("PK__Notifica__BCC120C49E858885");
 
             entity.Property(e => e.NotificacionId).HasColumnName("NotificacionID");
             entity.Property(e => e.EsLeida).HasDefaultValue(false);
@@ -186,7 +186,7 @@ public partial class SocialMediaDBContext : DbContext
 
         modelBuilder.Entity<Pago>(entity =>
         {
-            entity.HasKey(e => e.PagoId).HasName("PK__Pagos__F00B6158D3D080C9");
+            entity.HasKey(e => e.PagoId).HasName("PK__Pagos__F00B61581BBDB2D0");
 
             entity.Property(e => e.PagoId).HasColumnName("PagoID");
             entity.Property(e => e.Estado).HasMaxLength(50);
@@ -203,11 +203,11 @@ public partial class SocialMediaDBContext : DbContext
 
         modelBuilder.Entity<ProveedorAutenticacion>(entity =>
         {
-            entity.HasKey(e => e.ProveedorId).HasName("PK__Proveedo__61266BB90D2692F0");
+            entity.HasKey(e => e.ProveedorId).HasName("PK__Proveedo__61266BB97EB6CD37");
 
             entity.ToTable("ProveedorAutenticacion");
 
-            entity.HasIndex(e => e.NombreProveedor, "UQ__Proveedo__C20DF553C5E11F14").IsUnique();
+            entity.HasIndex(e => e.NombreProveedor, "UQ__Proveedo__C20DF553142DFFD7").IsUnique();
 
             entity.Property(e => e.ProveedorId).HasColumnName("ProveedorID");
             entity.Property(e => e.NombreProveedor).HasMaxLength(50);
@@ -215,7 +215,7 @@ public partial class SocialMediaDBContext : DbContext
 
         modelBuilder.Entity<Publicacione>(entity =>
         {
-            entity.HasKey(e => e.PublicacionId).HasName("PK__Publicac__10DF15AA493E4395");
+            entity.HasKey(e => e.PublicacionId).HasName("PK__Publicac__10DF15AAFDE345BA");
 
             entity.Property(e => e.PublicacionId).HasColumnName("PublicacionID");
             entity.Property(e => e.Enlace).HasMaxLength(255);
@@ -232,7 +232,7 @@ public partial class SocialMediaDBContext : DbContext
 
         modelBuilder.Entity<Reaccione>(entity =>
         {
-            entity.HasKey(e => e.ReaccionId).HasName("PK__Reaccion__EAF7E4CA3ABA3DBD");
+            entity.HasKey(e => e.ReaccionId).HasName("PK__Reaccion__EAF7E4CA4252A8F0");
 
             entity.Property(e => e.ReaccionId).HasColumnName("ReaccionID");
             entity.Property(e => e.PublicacionId).HasColumnName("PublicacionID");
@@ -250,7 +250,7 @@ public partial class SocialMediaDBContext : DbContext
 
         modelBuilder.Entity<RecuperacionContrasena>(entity =>
         {
-            entity.HasKey(e => e.RecuperacionId).HasName("PK__Recupera__32BA9F43384A32D2");
+            entity.HasKey(e => e.RecuperacionId).HasName("PK__Recupera__32BA9F43C5F0D970");
 
             entity.ToTable("RecuperacionContrasena");
 
@@ -269,11 +269,11 @@ public partial class SocialMediaDBContext : DbContext
 
         modelBuilder.Entity<Usuario>(entity =>
         {
-            entity.HasKey(e => e.UsuarioId).HasName("PK__Usuarios__2B3DE7988E65E65D");
+            entity.HasKey(e => e.UsuarioId).HasName("PK__Usuarios__2B3DE7985E7C04D4");
 
-            entity.HasIndex(e => e.NombreUsuario, "UQ__Usuarios__6B0F5AE0201BB4EF").IsUnique();
+            entity.HasIndex(e => e.NombreUsuario, "UQ__Usuarios__6B0F5AE0308117A5").IsUnique();
 
-            entity.HasIndex(e => e.Email, "UQ__Usuarios__A9D105346C388A5A").IsUnique();
+            entity.HasIndex(e => e.Email, "UQ__Usuarios__A9D10534E1958FCC").IsUnique();
 
             entity.Property(e => e.UsuarioId).HasColumnName("UsuarioID");
             entity.Property(e => e.Apellido).HasMaxLength(64);
@@ -288,6 +288,8 @@ public partial class SocialMediaDBContext : DbContext
             entity.Property(e => e.Intereses).HasMaxLength(255);
             entity.Property(e => e.Nombre).HasMaxLength(64);
             entity.Property(e => e.NombreUsuario).HasMaxLength(50);
+            entity.Property(e => e.Pregunta).HasMaxLength(64);
+            entity.Property(e => e.Respuesta).HasMaxLength(64);
             entity.Property(e => e.SalContraseña).HasMaxLength(128);
             entity.Property(e => e.Ubicacion).HasMaxLength(100);
         });

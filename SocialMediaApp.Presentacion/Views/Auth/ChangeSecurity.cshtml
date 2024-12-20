@@ -1,0 +1,167 @@
+﻿@model SocialMediaApp.Dominio.ViewModels.ChangeSecurityViewModel
+
+@{
+    ViewData["Title"] = "Opciones de Seguridad";
+}
+
+
+@if (TempData["Mensaje"] != null)
+{
+    <div class="alert @TempData["TipoMensaje"]" role="alert">
+        @TempData["Mensaje"]
+    </div>
+}
+
+@if (User.Claims.FirstOrDefault(c => c.Type == "ExternalLogin")?.Value == "1")
+{
+    <div class="container">
+        <h4 class="text-danger"> Debes gestionar tu opociones de seguridad en tu cuenta de Google.</h4>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h4>Cambia tu contraseña</h4>
+                    </div>
+
+                    <div class="card-body">
+                        <fieldset disabled>
+                            <form asp-action="ChangePassword" asp-controller="Auth" method="post">
+                                @Html.AntiForgeryToken()
+                                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                                <div class="form-group">
+                                    <label asp-for="PasswordChange.password"></label>
+                                    <input type="password" asp-for="PasswordChange.password" class="form-control" placeholder="Contraseña">
+                                    <span asp-validation-for="PasswordChange.password" class="text-danger"></span>
+                                </div>
+
+                                <div class="form-group">
+                                    <label asp-for="PasswordChange.newPassword"></label>
+                                    <input type="password" asp-for="PasswordChange.newPassword" class="form-control" placeholder="Nueva contraseña" />
+                                    <span asp-validation-for="PasswordChange.newPassword" class="text-danger"></span>
+                                </div>
+
+                                <div class="form-group">
+                                    <label asp-for="PasswordChange.confirmPassword"></label>
+                                    <input type="password" asp-for="PasswordChange.confirmPassword" class="form-control" placeholder="Confirmar contraseña" />
+                                    <span asp-validation-for="PasswordChange.confirmPassword" class="text-danger"></span>
+                                </div>
+
+                                <button type="submit" class="btn btn-primary disabled">Actualizar</button>
+                            </form>
+                     </fieldset>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h4>Cambia tu pregunta de seguridad o su respuesta</h4>
+                    </div>
+                    <div class="card-body">
+                        <fieldset disabled>
+                        <form asp-action="ChangeSecurityQuestion" asp-controller="Auth" method="post">
+                            @Html.AntiForgeryToken()
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                            <div class="form-group">
+                                <select asp-for="QuestionChange.Pregunta" class="form-control" asp-items="ViewBag.Preguntas"></select>
+                                <span asp-validation-for="QuestionChange.Pregunta" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="QuestionChange.Respuesta"></label>
+                                <input type="password" asp-for="QuestionChange.Respuesta" class="form-control" placeholder="Respuesta" />
+                                <span asp-validation-for="QuestionChange.Respuesta" class="text-danger"></span>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary" disabled>Actualizar</button>
+                        </form>
+                        </fieldset>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h4>Cambia tu contraseña</h4>
+                    </div>
+
+                    <div class="card-body">
+                        <form asp-action="ChangePassword" asp-controller="Auth" method="post">
+                            @Html.AntiForgeryToken()
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                            <div class="form-group">
+                                <label asp-for="PasswordChange.password"></label>
+                                <input type="password" asp-for="PasswordChange.password" class="form-control" placeholder="Contraseña">
+                                <span asp-validation-for="PasswordChange.password" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="PasswordChange.newPassword"></label>
+                                <input type="password" asp-for="PasswordChange.newPassword" class="form-control" placeholder="Nueva contraseña" />
+                                <span asp-validation-for="PasswordChange.newPassword" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="PasswordChange.confirmPassword"></label>
+                                <input type="password" asp-for="PasswordChange.confirmPassword" class="form-control" placeholder="Confirmar contraseña" />
+                                <span asp-validation-for="PasswordChange.confirmPassword" class="text-danger"></span>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary">Actualizar</button>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h4>Cambia tu pregunta de seguridad o su respuesta</h4>
+                    </div>
+                    <div class="card-body">
+                        <form asp-action="ChangeSecurityQuestion" asp-controller="Auth" method="post">
+                            @Html.AntiForgeryToken()
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                            <div class="form-group">
+                                <select asp-for="QuestionChange.Pregunta" class="form-control" asp-items="ViewBag.Preguntas"></select>
+                                <span asp-validation-for="QuestionChange.Pregunta" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="QuestionChange.Respuesta"></label>
+                                <input type="password" asp-for="QuestionChange.Respuesta" class="form-control" placeholder="Respuesta" />
+                                <span asp-validation-for="QuestionChange.Respuesta" class="text-danger"></span>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary">Actualizar</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+
+
+@section Scripts {
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }

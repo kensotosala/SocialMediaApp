@@ -4,6 +4,13 @@
     ViewData["Title"] = "Iniciar Sesión";
 }
 
+@if (TempData["Mensaje"] != null)
+{
+    <div class="alert @TempData["TipoMensaje"]" role="alert">
+        @TempData["Mensaje"]
+    </div>
+}
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -231,24 +238,21 @@
 
                 <button type="submit" value="Login" class="login-btn">Iniciar Sesión</button>
             </form>
+
+            <div class="register-link">
+                <p>¿Aún no tienes una cuenta?</p>
+                <a asp-controller="Auth" class="btn btn-secondary"  asp-action="Register">Registrarse</a>
+            </div>
+
+            <div class="col-5 text-end">
+                <a asp-controller="GoogleAuth" asp-action="LoginGoogle" class="btn btn-primary form-control">Iniciar Sesión con Google</a>
+            </div>
         </div>
     </div>
 
 </body>
 
 </html>
-
-@if (TempData["Mensaje"] != null)
-{
-    <div class="alert @TempData["TipoMensaje"]" role="alert">
-        @TempData["Mensaje"]
-    </div>
-}
-
-
-<div class="col-5 text-end">
-    <a asp-controller="GoogleAuth" asp-action="LoginGoogle" class="btn btn-primary form-control">Iniciar Sesión con Google</a>
-</div>
 
 @section Scripts {
     @{

@@ -3,6 +3,14 @@
 @{
     ViewData["Title"] = "Registrar cuenta";
 }
+
+@if (TempData["Mensaje"] != null)
+{
+    <div class="alert @TempData["TipoMensaje"]" role="alert">
+        @TempData["Mensaje"]
+    </div>
+}
+
 <!DOCTYPE html>
 <html lang="es">
 
@@ -356,13 +364,6 @@
                 increíble.
             </p>
 
-            @if (TempData["Mensaje"] != null)
-            {
-                <div class="alert @TempData["TipoMensaje"]" role="alert">
-                    @TempData["Mensaje"]
-                </div>
-            }
-
         </div>
 
         <div class="register-side">
@@ -402,11 +403,11 @@
                             <span asp-validation-for="Apellido" class="text-danger"></span>
                         </div>
 
-                    <div class="form-group">
-                        <label asp-for="Contraseña">Contraseña:</label>
-                        <input type="password" asp-for="Contraseña" class="form-control" placeholder="Contraseña">
-                        <span asp-validation-for="Contraseña" class="text-danger"></span>
-                    </div>
+                        <div class="form-group">
+                            <label asp-for="Contraseña">Contraseña:</label>
+                            <input type="password" asp-for="Contraseña" class="form-control" placeholder="Contraseña">
+                            <span asp-validation-for="Contraseña" class="text-danger"></span>
+                        </div>
 
                         <div class="form-group">
                             <label asp-for="ConfirmarContraseña">Confirmar Contraseña:</label>
@@ -414,21 +415,16 @@
                             <span asp-validation-for="ConfirmarContraseña" class="text-danger"></span>
                         </div>
 
-@*                         <div class="form-group country-select">
-                            <div class="selected-country" id="selectedCountry">
-                                <span>Selecciona tu país</span>
-                            </div>
-                            <div class="countries-dropdown" id="countriesDropdown">
-                                <div class="country-search">
-                                    <input type="text" placeholder="Buscar país..." id="countrySearch">
-                                </div>
-                                <div id="countriesList">
-                                    <div class="loading-countries">Cargando países...</div>
-                                </div>
-                            </div>
+                        <div class="form-group">
+                            <select asp-for="Pregunta" class="form-control" asp-items="ViewBag.Preguntas"></select>
+                            <span asp-validation-for="Pregunta" class="text-danger"></span>
                         </div>
-                    </div> *@
 
+                        <div>
+                        <label asp-for="Respuesta">Respuesta:</label>
+                        <input type="password" asp-for="Respuesta" class="form-control" placeholder="Respuesta" />
+                        <span asp-validation-for="Respuesta" class="text-danger"></span>
+                        </div>
                     <button type="submit" value="Register" class="btn btn-primary">Crear Cuenta</button>
                 
                 </form>
@@ -531,4 +527,3 @@
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
 }
-

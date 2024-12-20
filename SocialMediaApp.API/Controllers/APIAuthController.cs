@@ -19,6 +19,13 @@ namespace SocialMediaApp.API.Controllers
             _authService = authService;
         }
 
+        [HttpPut]
+        [Route("ChangeProfile")]
+        public async Task<IActionResult> ChangeProfile([FromBody] SocialMediaApp.Persistencia.Data.Profile updates)
+        {
+            return Ok(new { resultado = await _authRep.ChangeProfile(updates) });
+        }
+
 
         [HttpPut]
         [Route("ForgotPassword")]
@@ -44,22 +51,26 @@ namespace SocialMediaApp.API.Controllers
             {
                 if (usernameUser.Email.Equals(forgotPassRequest.Email))
                 {
-                    var newUnhashedPw = GenerateSecurePassword();
 
-                    usernameUser.Contraseña = _authService.CreateHashPassword(newUnhashedPw, out string salt);
-
-                    usernameUser.SalContraseña = salt;
-
-                    var resultado = await _authRep.ChangePassword(usernameUser);
-
-                    if (resultado == 1)
+                    if (forgotPassRequest.Pregunta == usernameUser.Pregunta && forgotPassRequest.Respuesta == usernameUser.Respuesta)
                     {
-                        return Ok(new
-                        {
-                            Message = newUnhashedPw,
-                            Details = "Recuperación de contraseña exitosa"
+                        var newUnhashedPw = GenerateSecurePassword();
 
-                        });
+                        usernameUser.Contraseña = _authService.CreateHashPassword(newUnhashedPw, out string salt);
+
+                        usernameUser.SalContraseña = salt;
+
+                        var resultado = await _authRep.ChangePassword(usernameUser);
+
+                        if (resultado == 1)
+                        {
+                            return Ok(new
+                            {
+                                Message = newUnhashedPw,
+                                Details = "Recuperación de contraseña exitosa"
+
+                            });
+                        }
                     }
                 }
             }
@@ -146,6 +157,32 @@ namespace SocialMediaApp.API.Controllers
             return Content(jsonResponse, "application/json");
         }
 
+        [HttpGet]
+        [Route("GetByUsername/{username}")]
+        public async Task<ActionResult> GetByUsername(string username)
+        {
+            var response = await _authRep.getByUsername(username);
+
+            Usuario user = null;
+
+            if (response != null)
+            {
+                user = new Usuario()
+                {
+                    NombreUsuario = response.NombreUsuario,
+                    Nombre = response.Nombre,
+                    Apellido = response.Apellido,
+                    Email = response.Email,
+                    Biografia = response.Biografia,
+                    Ubicacion = response.Ubicacion
+                };
+            }
+
+            var jsonResponse = JsonConvert.SerializeObject(user);
+
+            return Content(jsonResponse, "application/json");
+        }
+
         [HttpPost]
         [Route("Login")]
         public async Task<ActionResult> Login([FromBody] LoginRequest loginrequest)
@@ -207,6 +244,14 @@ namespace SocialMediaApp.API.Controllers
 
             return Ok(new { resultado = await _authRep.ChangePassword(newUser) });
         }
+
+        [HttpPut]
+        [Route("ChangeQuestion")]
+        public async Task<ActionResult> ChangeQuestion([FromBody] ChangeQuestionRequest changeQuestion)
+        {
+            return Ok(new { resultado = await _authRep.ChangeQuestion(changeQuestion) });
+        }
+
         public static string GenerateSecurePassword()
         {
             const string upperCase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";

@@ -40,5 +40,12 @@ namespace SocialMediaApp.Dominio.ViewModels
         public bool? EsPremium { get; set; }
 
         public DateTime? FechaRegistro { get; set; }
+
+        [Required(ErrorMessage = "Se quiere una pregunta de seguridad,.")]
+        public string Pregunta { get; set; } = null!;
+
+        [Required(ErrorMessage = "Se quiere una respuesta.")]
+        [StringLength(64, MinimumLength = 1, ErrorMessage = "La respuesta debe contener entre 1 and 64 characters.")]
+        public string Respuesta { get; set; } = null!;
     }
 }

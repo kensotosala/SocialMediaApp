@@ -9,17 +9,28 @@ namespace SocialMediaApp.Dominio.ViewModels
 {
     public class ProfileViewModel
     {
-        [Required(ErrorMessage = "Se quiere tu contraseña actual.")]
-        public string password {  get; set; }
+        public string? NombreUsuario { get; set; }
 
-        [Required(ErrorMessage = "Se quiere una contraseña nueva.")]
-        [StringLength(128, MinimumLength = 8, ErrorMessage = "La contraseña debe contener entre 8 and 16 characters.")]
-        [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*[\!\@\#\$\%\^\&\*\(\)\,\.\?\"":\{\}\|<>\=\+])[A-Za-z\d\!\@\#\$\%\^\&\*\(\)\,\.\?\"":\{\}\|<>\=\+]+$",
-        ErrorMessage = "La contraseña debe contener al menos una letra mayúscula, una letra minúscula y un carácter especial")]
-        public string newPassword { get; set; }
+        [Required(ErrorMessage = "Se requiere un nombre.")]
+        [MinLength(2, ErrorMessage = "El nombre debe tener 2 o más caracteres.")]
+        public string Nombre { get; set; } = null!;
+
+
+        [Required(ErrorMessage = "Se requiere un apellido.")]
+        [MinLength(2, ErrorMessage = "El apellido debe tener 2 o más caracteres.")]
+        public string Apellido { get; set; } = null!;
         
-        [Compare("newPassword", ErrorMessage = "Las contraseñas ingresadas no coinciden.")]
-        [Required(ErrorMessage = "Se requiere confirmar la nueva contraseña.")]
-        public string confirmPassword { get; set; }
+        
+        public string? Biografia{ get; set; }
+
+        
+        [MinLength(2, ErrorMessage = "Tu ubicacion debe tener al menos 2 caracteres.")]
+        public string? Ubicacion { get; set; }
+
+        
+        [Required(ErrorMessage = "Se requiere un correo electrónico.")]
+        [EmailAddress(ErrorMessage = "Correo electrónico con formato incorrecto.")]
+        public string Email { get; set; } = null!;
+
     }
 }

@@ -137,7 +137,8 @@ namespace SocialMediaApp.Presentacion.Controllers
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Nombre),
-                new Claim("ExternalLogin", external.ToString())
+                new Claim("ExternalLogin", external.ToString()),
+                new Claim("UserName", user.NombreUsuario)
             };
 
             var claimIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
