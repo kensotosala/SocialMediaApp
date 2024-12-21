@@ -73,13 +73,9 @@ namespace SocialMediaApp.Persistencia.Repositorios
 
             _context.Entry(existingUser).Property(u => u.Nombre).CurrentValue = updates.Nombre;
             _context.Entry(existingUser).Property(u => u.Apellido).CurrentValue = updates.Apellido;
-            
-            if(updates.Biografia != null)
-                _context.Entry(existingUser).Property(u => u.Biografia).CurrentValue = updates.Biografia;
+            _context.Entry(existingUser).Property(u => u.Biografia).CurrentValue = updates.Biografia;
+            _context.Entry(existingUser).Property(u => u.Ubicacion).CurrentValue = updates.Ubicacion;
 
-            if (updates.Ubicacion != null)
-                _context.Entry(existingUser).Property(u => u.Ubicacion).CurrentValue = updates.Ubicacion;
-            
             _context.Entry(existingUser).Property(u => u.Email).CurrentValue = updates.Email;
 
             return await _context.SaveChangesAsync();

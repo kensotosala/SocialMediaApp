@@ -280,7 +280,10 @@ namespace SocialMediaApp.Presentacion.Controllers
                     new SelectListItem { Text = "¿Cuál es tu comida favorita?", Value = "¿Cuál es tu comida favorita?" },
                     new SelectListItem { Text = "¿Cómo se llamaba tu primer maestro?", Value = "¿Cómo se llamaba tu primer maestro?" },
                     new SelectListItem { Text = "¿Cuál es el nombre de tu película favorita?", Value = "¿Cuál es el nombre de tu película favorita?" },
-                    new SelectListItem { Text = "¿Qué deporte te gusta más??", Value = "¿Qué deporte te gusta más?" }
+                    new SelectListItem { Text = "¿Qué deporte te gusta más?", Value = "¿Qué deporte te gusta más?" },
+                    new SelectListItem { Text = "¿Cuál es tu color favorito?", Value = "¿Cuál es tu color favorito?" },
+                    new SelectListItem { Text = "¿Cómo se llama tu primera mascota?", Value = "¿Cómo se llama tu primera mascota?" },
+                    new SelectListItem { Text = "¿Cuál fue tu primera escuela?", Value = "¿Cuál fue tu primera escuela?" },
                 };
         }
 
@@ -332,7 +335,7 @@ namespace SocialMediaApp.Presentacion.Controllers
                     TempData["TipoMensaje"] = "alert-danger";
                 }
 
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("ChangeSecurity", "Auth");
             }
             else
             {
@@ -342,7 +345,7 @@ namespace SocialMediaApp.Presentacion.Controllers
                 TempData["TipoMensaje"] = "alert-danger";
             }
 
-            return RedirectToAction("Profile", "Auth");
+            return RedirectToAction("ChangeSecurity", "Auth");
         }
 
         [HttpPost]
